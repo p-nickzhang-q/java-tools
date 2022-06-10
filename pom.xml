@@ -9,7 +9,7 @@
         <version>2.3.1.RELEASE</version>
         <relativePath/>
     </parent>
-    <groupId>org.zh</groupId>
+    <groupId>com.zhangyida</groupId>
     <artifactId>java-tools</artifactId>
     <version>0.0.1</version>
 
