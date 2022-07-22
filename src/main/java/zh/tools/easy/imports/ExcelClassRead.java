@@ -6,17 +6,23 @@ import org.springframework.web.multipart.MultipartFile;
 import zh.tools.easy.Util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class ExcelClassRead {
 
     public static <T> List<T> read(MultipartFile file, Class<T> tClass) throws IOException {
         Util.validateExcel(file);
+        InputStream inputStream = file.getInputStream();
+        return read(tClass, inputStream);
+    }
+
+    public static <T> List<T> read(Class<T> tClass, InputStream inputStream) {
         ExcelAnalysisEventListener<T> eventListener = new ExcelAnalysisEventListener<T>(1,
                 tClass) {
         };
         EasyExcel
-                .read(file.getInputStream(),
+                .read(inputStream,
                         tClass,
                         eventListener)
                 .extraRead(CellExtraTypeEnum.MERGE)

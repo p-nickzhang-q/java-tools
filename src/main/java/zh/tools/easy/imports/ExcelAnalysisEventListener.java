@@ -2,6 +2,7 @@ package zh.tools.easy.imports;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.enums.RowTypeEnum;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.exception.ExcelDataConvertException;
 import com.alibaba.excel.metadata.CellExtra;
@@ -14,6 +15,7 @@ import zh.tools.easy.annotation.ExcelValidate;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Predicate;
 
 @Slf4j
 public abstract class ExcelAnalysisEventListener<T> extends AnalysisEventListener<T> {
@@ -48,6 +50,7 @@ public abstract class ExcelAnalysisEventListener<T> extends AnalysisEventListene
                     });
         }
     };
+    public static final Predicate<AnalysisContext> IS_EMPTY = context -> RowTypeEnum.EMPTY.equals(context.readRowHolder().getRowType());
 
     public ExcelAnalysisEventListener(Integer headRowNumber, Class<T> clazz) {
         this.headRowNumber = headRowNumber;
@@ -159,7 +162,7 @@ public abstract class ExcelAnalysisEventListener<T> extends AnalysisEventListene
             for (Field field : fields) {
                 ExcelValidate excelValidate = field.getAnnotation(ExcelValidate.class);
                 ExcelProperty excelProperty = field.getAnnotation(ExcelProperty.class);
-                if(excelProperty == null){
+                if (excelProperty == null) {
                     continue;
                 }
                 String columnName = String.join("-",
@@ -234,4 +237,6 @@ public abstract class ExcelAnalysisEventListener<T> extends AnalysisEventListene
         }
         return result;
     }
+
+
 }
