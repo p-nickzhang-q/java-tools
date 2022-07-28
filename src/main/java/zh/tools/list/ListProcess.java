@@ -32,6 +32,13 @@ public class ListProcess<T> {
                 getProperty));
     }
 
+    public <R> ListProcess<R> getPropertyList(Function<T, R> getProperty) {
+        return of(list
+                .stream()
+                .map(getProperty)
+                .collect(Collectors.toList()));
+    }
+
     public <R> ListProcess<R> getDistinctPropertiesList(Function<T, List<R>> getProperty) {
         return of(ListUtil.getPropertiesList(list,
                 getProperty));
