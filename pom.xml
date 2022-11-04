@@ -3,6 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <modules>
+        <module>common</module>
+        <module>excel</module>
+        <module>jpa</module>
+        <module>word</module>
+        <module>pdf</module>
+    </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -11,22 +18,19 @@
     </parent>
     <groupId>io.github.p-nickzhang-q</groupId>
     <artifactId>java-tools</artifactId>
-    <version>0.0.2.1</version>
-    <packaging>jar</packaging>
+    <version>0.0.3</version>
+    <packaging>pom</packaging>
 
     <distributionManagement>
         <repository>
             <id>local-repo-release</id>
             <name>GitHub Release</name>
-            <url>file://D:/Gitee/java-tools/maven-repo</url>
+            <url>file://${project.basedir}/maven-repo</url>
         </repository>
     </distributionManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -40,11 +44,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>2.0.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
