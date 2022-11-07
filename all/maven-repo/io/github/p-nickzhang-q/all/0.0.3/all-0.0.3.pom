@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>java-tools</artifactId>
+        <artifactId>zh-tools</artifactId>
         <groupId>io.github.p-nickzhang-q</groupId>
         <version>0.0.3</version>
     </parent>
@@ -19,28 +19,27 @@
     <dependencies>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>common</artifactId>
-            <scope>compile</scope>
+            <artifactId>zh-tools-common</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>word</artifactId>
+            <artifactId>zh-tools-word</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>excel</artifactId>
+            <artifactId>zh-tools-excel</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>jpa</artifactId>
+            <artifactId>zh-tools-jpa</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>pdf</artifactId>
+            <artifactId>zh-tools-pdf</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
