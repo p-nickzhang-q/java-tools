@@ -1,5 +1,8 @@
 package zh.tools.pdf;
 
+import cn.hutool.core.lang.Console;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
 
@@ -26,4 +29,23 @@ public class Util {
                 response.getOutputStream());
     }
 
+    public static String readPdf(InputStream inputStream) {
+        StringBuilder content = new StringBuilder();
+        try {
+            // 读取文本内容
+            PDDocument document = PDDocument.load(inputStream);
+            // 获取页码
+            int pages = document.getNumberOfPages();
+            PDFTextStripper stripper = new PDFTextStripper();
+            // 设置按顺序输出
+            stripper.setSortByPosition(true);
+            stripper.setStartPage(1);
+            stripper.setEndPage(pages);
+            content.append(stripper.getText(document));
+            document.close();
+        } catch (Exception e) {
+            Console.error(e);
+        }
+        return content.toString();
+    }
 }

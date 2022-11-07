@@ -9,6 +9,7 @@
         <module>jpa</module>
         <module>word</module>
         <module>pdf</module>
+        <module>all</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
