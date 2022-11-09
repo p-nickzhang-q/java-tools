@@ -34,11 +34,6 @@
         </dependency>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>zh-tools-jpa</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.p-nickzhang-q</groupId>
             <artifactId>zh-tools-pdf</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

@@ -1,4 +1,4 @@
-package zh.tools.jpa;
+package zh.tools.common.consts;
 
 public class SpecOperator {
     public static final String START = "$start";

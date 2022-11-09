@@ -10,6 +10,7 @@
         <module>word</module>
         <module>pdf</module>
         <module>all</module>
+        <module>mybatis-plus</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
