@@ -10,6 +10,7 @@
         <module>word</module>
         <module>pdf</module>
         <module>all</module>
+        <module>mybatis-plus</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -50,11 +51,6 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.4.7</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>1.9.2</version>
         </dependency>
     </dependencies>
 

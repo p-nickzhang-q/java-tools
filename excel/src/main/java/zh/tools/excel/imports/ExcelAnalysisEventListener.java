@@ -1,5 +1,6 @@
 package zh.tools.excel.imports;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.enums.RowTypeEnum;
@@ -9,7 +10,6 @@ import com.alibaba.excel.metadata.CellExtra;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.beanutils.BeanUtils;
 import zh.tools.excel.annotation.ExcelValidate;
 
 import java.lang.reflect.Field;
@@ -167,7 +167,7 @@ public abstract class ExcelAnalysisEventListener<T> extends AnalysisEventListene
                 }
                 String columnName = String.join("-",
                         excelProperty.value());
-                String property = BeanUtils.getProperty(t,
+                String property = BeanUtil.getProperty(t,
                         field.getName());
                 if (excelValidate != null) {
                     //required
