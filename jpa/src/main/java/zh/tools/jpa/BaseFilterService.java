@@ -1,26 +1,18 @@
 package zh.tools.jpa;
 
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 import zh.tools.common.map.FilterMap;
 
 import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
 import java.util.*;
 
-@Service
-public class BaseFilterService<T, ID extends Serializable> {
+public abstract class BaseFilterService<T, ID extends Serializable> {
 
-    @Autowired
-    protected SpecFilterService<T> specFilterService;
-
-    @Setter
-    protected BaseRepositorySupport<T, ID> repository;
+    public abstract BaseRepositorySupport<T, ID> repository();
 
     protected Specification<T> parseFilter2Spec(Map<String, Object> filter, SearchHook<T> searchHook) {
         if (searchHook == null) {
@@ -35,7 +27,7 @@ public class BaseFilterService<T, ID extends Serializable> {
                     criteriaQuery,
                     cb,
                     new FilterMap<>(filter));
-            specFilterService.parseFilter(root,
+            SpecFilterUtil.parseFilter(root,
                     cb,
                     filter,
                     restrictions);
@@ -46,62 +38,71 @@ public class BaseFilterService<T, ID extends Serializable> {
     public Page<T> filter(Map<String, Object> filter, Pageable pageable) {
         Specification<T> spec = parseFilter2Spec(filter,
                 null);
-        return repository.findAll(spec,
-                pageable);
+        return repository()
+                .findAll(spec,
+                        pageable);
     }
 
-    public Page<T> filter(FilterRequest filterRequest) {
-        Specification<T> spec = parseFilter2Spec(filterRequest.getFilter(),
+    public Page<T> filter(JpaFilterRequest jpaFilterRequest) {
+        Specification<T> spec = parseFilter2Spec(jpaFilterRequest.getFilter(),
                 null);
-        return repository.findAll(spec,
-                filterRequest.toPage());
+        return repository()
+                .findAll(spec,
+                        jpaFilterRequest.toPage());
     }
 
     public List<T> filter(Map<String, Object> filter) {
         Specification<T> spec = parseFilter2Spec(filter,
                 null);
-        return repository.findAll(spec);
+        return repository()
+                .findAll(spec);
     }
 
     public List<T> filter() {
-        Specification<T> spec = parseFilter2Spec(FilterMap.newFilterMap(),
+        Specification<T> spec = parseFilter2Spec(new FilterMap<>(),
                 null);
-        return repository.findAll(spec);
+        return repository()
+                .findAll(spec);
     }
 
     public Optional<T> filterOne(Map<String, Object> filter) {
         Specification<T> spec = parseFilter2Spec(filter,
                 null);
-        return repository.findOne(spec);
+        return repository()
+                .findOne(spec);
     }
 
     public List<T> filter(Map<String, Object> filter, Sort sort) {
         Specification<T> spec = parseFilter2Spec(filter,
                 null);
-        return repository.findAll(spec,
-                sort);
+        return repository()
+                .findAll(spec,
+                        sort);
     }
 
     public Long count(Map<String, Object> filter) {
         Specification<T> spec = parseFilter2Spec(filter,
                 null);
-        return repository.count(spec);
+        return repository()
+                .count(spec);
     }
 
     public Page<T> filter(Map<String, Object> filter, Pageable pageable, SearchHook<T> searchHook) {
         Specification<T> spec = parseFilter2Spec(filter,
                 searchHook);
-        Page<T> page = repository.findAll(spec,
-                pageable);
+        Page<T> page = repository()
+                .findAll(spec,
+                        pageable);
         searchHook.beforeReturn(page.getContent());
         return page;
     }
 
-    public Page<T> filter(FilterRequest filterRequest, SearchHook<T> searchHook) {
-        Specification<T> spec = parseFilter2Spec(filterRequest.getFilter(),
+    public Page<T> filter(JpaFilterRequest jpaFilterRequest, SearchHook<T> searchHook) {
+        Specification<T> spec = parseFilter2Spec(jpaFilterRequest.getFilter(),
                 searchHook);
-        Page<T> page = repository.findAll(spec,
-                filterRequest.toPage());
+        Page<T> page = repository()
+                .findAll(spec,
+                        jpaFilterRequest.toPage());
         searchHook.beforeReturn(page.getContent());
         return page;
     }
@@ -109,15 +110,17 @@ public class BaseFilterService<T, ID extends Serializable> {
     public List<T> filter(Map<String, Object> filter, SearchHook<T> searchHook) {
         Specification<T> spec = parseFilter2Spec(filter,
                 searchHook);
-        List<T> list = repository.findAll(spec);
+        List<T> list = repository()
+                .findAll(spec);
         searchHook.beforeReturn(list);
         return list;
     }
 
     public List<T> filter(SearchHook<T> searchHook) {
-        Specification<T> spec = parseFilter2Spec(FilterMap.newFilterMap(),
+        Specification<T> spec = parseFilter2Spec(new FilterMap<>(),
                 searchHook);
-        List<T> list = repository.findAll(spec);
+        List<T> list = repository()
+                .findAll(spec);
         searchHook.beforeReturn(list);
         return list;
     }
@@ -125,7 +128,8 @@ public class BaseFilterService<T, ID extends Serializable> {
     public Optional<T> filterOne(Map<String, Object> filter, SearchHook<T> searchHook) {
         Specification<T> spec = parseFilter2Spec(filter,
                 searchHook);
-        Optional<T> one = repository.findOne(spec);
+        Optional<T> one = repository()
+                .findOne(spec);
         one.ifPresent(t -> {
             searchHook.beforeReturn(Collections.singletonList(t));
         });
@@ -135,8 +139,9 @@ public class BaseFilterService<T, ID extends Serializable> {
     public List<T> filter(Map<String, Object> filter, Sort sort, SearchHook<T> searchHook) {
         Specification<T> spec = parseFilter2Spec(filter,
                 searchHook);
-        List<T> list = repository.findAll(spec,
-                sort);
+        List<T> list = repository()
+                .findAll(spec,
+                        sort);
         searchHook.beforeReturn(list);
         return list;
     }
@@ -144,7 +149,8 @@ public class BaseFilterService<T, ID extends Serializable> {
     public Long count(Map<String, Object> filter, SearchHook<T> searchHook) {
         Specification<T> spec = parseFilter2Spec(filter,
                 searchHook);
-        return repository.count(spec);
+        return repository()
+                .count(spec);
     }
 
 }

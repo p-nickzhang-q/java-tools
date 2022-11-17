@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>java-tools</artifactId>
+        <artifactId>zh-tools</artifactId>
         <groupId>io.github.p-nickzhang-q</groupId>
         <version>0.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>excel</artifactId>
+    <artifactId>zh-tools-excel</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -24,8 +24,8 @@
         </dependency>
         <dependency>
             <groupId>io.github.p-nickzhang-q</groupId>
-            <artifactId>common</artifactId>
-            <version>${project.parent.version}</version>
+            <artifactId>zh-tools-common</artifactId>
+
         </dependency>
     </dependencies>
 

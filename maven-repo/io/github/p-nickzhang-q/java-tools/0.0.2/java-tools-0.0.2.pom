@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>io.github.p-nickzhang-q</groupId>
-    <artifactId>java-tools</artifactId>
+    <artifactId>zh-tools</artifactId>
     <version>0.0.2</version>
     <packaging>jar</packaging>
 
