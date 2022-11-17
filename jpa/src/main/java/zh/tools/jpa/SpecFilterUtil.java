@@ -1,6 +1,5 @@
 package zh.tools.jpa;
 
-import cn.hutool.core.exceptions.ValidateException;
 import cn.hutool.core.util.StrUtil;
 import zh.tools.common.consts.SpecOperator;
 import zh.tools.common.time.JavaTimeUtil;
@@ -10,14 +9,13 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class SpecFilterUtil {
 
     public final static String DATE_REG = "\\d{4}-\\d{2}-\\d{2}";
 
-    public static  <T> void parseFilter(Path<T> root, CriteriaBuilder cb, Map<String, Object> filter, List<Predicate> predicates) {
+    public static <T> void parseFilter(Path<T> root, CriteriaBuilder cb, Map<String, Object> filter, List<Predicate> predicates) {
         filter.forEach((k, v) -> {
             if (v instanceof List) {
                 listProcess(root,
@@ -42,16 +40,10 @@ public class SpecFilterUtil {
         });
     }
 
-    private static final Map<String, Function<String, Object>> ENUM_PROCESS = new HashMap<>();
-
-    private static Object processEnumValueFilter(Path<Object> path, String v) {
-        Function<String, Object> process = ENUM_PROCESS.get(path
-                .getJavaType()
-                .getName());
-        if (process == null) {
-            throw new ValidateException("枚举类型错误");
-        }
-        return process.apply(v);
+    private static Enum processEnumValueFilter(Path<Object> path, String v) {
+        Class javaType = path.getJavaType();
+        return Enum.valueOf(javaType,
+                v);
     }
 
     private static Optional<Predicate> getBaseDataPredicate(CriteriaBuilder cb, Path<Object> path, Object v) {

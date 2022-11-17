@@ -43,12 +43,12 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
                         pageable);
     }
 
-    public Page<T> filter(FilterRequest filterRequest) {
-        Specification<T> spec = parseFilter2Spec(filterRequest.getFilter(),
+    public Page<T> filter(JpaFilterRequest jpaFilterRequest) {
+        Specification<T> spec = parseFilter2Spec(jpaFilterRequest.getFilter(),
                 null);
         return repository()
                 .findAll(spec,
-                        filterRequest.toPage());
+                        jpaFilterRequest.toPage());
     }
 
     public List<T> filter(Map<String, Object> filter) {
@@ -97,12 +97,12 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
         return page;
     }
 
-    public Page<T> filter(FilterRequest filterRequest, SearchHook<T> searchHook) {
-        Specification<T> spec = parseFilter2Spec(filterRequest.getFilter(),
+    public Page<T> filter(JpaFilterRequest jpaFilterRequest, SearchHook<T> searchHook) {
+        Specification<T> spec = parseFilter2Spec(jpaFilterRequest.getFilter(),
                 searchHook);
         Page<T> page = repository()
                 .findAll(spec,
-                        filterRequest.toPage());
+                        jpaFilterRequest.toPage());
         searchHook.beforeReturn(page.getContent());
         return page;
     }
