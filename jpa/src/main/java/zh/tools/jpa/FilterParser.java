@@ -167,42 +167,51 @@ public class FilterParser {
     private void parseLe(String field, Object cv) {
         processCompare(field,
                 cv,
-                new SpecCompare(criteriaBuilder::lessThanOrEqualTo));
+                new SpecCompare(criteriaBuilder::lessThanOrEqualTo,
+                        criteriaBuilder::lessThanOrEqualTo));
     }
 
 
     public void processCompare(String field, Object value, SpecCompare compare) {
         Predicate predicate;
+        Path<Object> path = root.get(field);
         if (value instanceof String) {
             if (JavaTimeUtil.matchDateReg(value.toString())) {
-                value = JavaTimeUtil.str2LocalDate(value.toString());
+                predicate = compare.commonCompare.compare(path,
+                        JavaTimeUtil.str2LocalDate(value.toString()));
             } else if (JavaTimeUtil.matchDateTimeReg(value.toString())) {
-                value = JavaTimeUtil.str2LocalDateTime(value.toString());
+                predicate = compare.commonCompare.compare(path,
+                        JavaTimeUtil.str2LocalDateTime(value.toString()));
             } else {
-                value = root.get(value.toString());
+                predicate = compare.pathCompare.compare(path,
+                        root.get(value.toString()));
             }
+        } else {
+            predicate = compare.commonCompare.compare(path,
+                    ((Comparable) value));
         }
-        predicate = compare.compare.compare(root.get(field),
-                ((Comparable) value));
         restrictions.add(predicate);
     }
 
     private void parseLt(String field, Object cv) {
         processCompare(field,
                 cv,
-                new SpecCompare(criteriaBuilder::lessThan));
+                new SpecCompare(criteriaBuilder::lessThan,
+                        criteriaBuilder::lessThan));
     }
 
     private void parseGt(String field, Object cv) {
         processCompare(field,
                 cv,
-                new SpecCompare(criteriaBuilder::greaterThan));
+                new SpecCompare(criteriaBuilder::greaterThan,
+                        criteriaBuilder::greaterThan));
     }
 
     private void parseGe(String field, Object cv) {
         processCompare(field,
                 cv,
-                new SpecCompare(criteriaBuilder::greaterThanOrEqualTo));
+                new SpecCompare(criteriaBuilder::greaterThanOrEqualTo,
+                        criteriaBuilder::greaterThanOrEqualTo));
     }
 
     private void listParse(String k, List<Object> v) {

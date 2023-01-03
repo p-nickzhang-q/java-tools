@@ -28,8 +28,8 @@ public class JpaTest {
         List<User> users = userService.filter(FilterMap
                 .newFilterMap()
                 .wrapper("age",
-                        stringObjectFilterMap -> stringObjectFilterMap.set(SpecOperator.LE,
-                                13)));
+                        stringObjectFilterMap -> stringObjectFilterMap.set(SpecOperator.GT,
+                                "id")));
         Console.log(users);
         userService
                 .repository()

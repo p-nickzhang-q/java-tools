@@ -8,14 +8,20 @@ import javax.persistence.criteria.Predicate;
 @Data
 public class SpecCompare {
 
-    public Compare compare;
+    public Compare<Comparable> commonCompare;
+    public Compare<Path> pathCompare;
 
-    public SpecCompare(Compare compare) {
-        this.compare = compare;
+    public SpecCompare(Compare<Comparable> commonCompare) {
+        this.commonCompare = commonCompare;
+    }
+
+    public SpecCompare(Compare<Comparable> commonCompare, Compare<Path> pathCompare) {
+        this.commonCompare = commonCompare;
+        this.pathCompare = pathCompare;
     }
 
     @FunctionalInterface
-    public interface Compare {
-        Predicate compare(Path path, Comparable comparable);
+    public interface Compare<T> {
+        Predicate compare(Path path, T comparable);
     }
 }
