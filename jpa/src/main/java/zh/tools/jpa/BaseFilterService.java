@@ -21,17 +21,16 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
         }
         SearchHook<T> finalSearchHook = searchHook;
         return (root, criteriaQuery, cb) -> {
-            List<Predicate> restrictions = new ArrayList<>();
+            FilterParser filterParser = new FilterParser(root,
+                    cb);
+            List<Predicate> restrictions = filterParser.getRestrictions();
             finalSearchHook.beforeParseFilter(restrictions,
                     root,
                     criteriaQuery,
                     cb,
                     new FilterMap<>(filter));
-            SpecFilterUtil.parseFilter(root,
-                    cb,
-                    filter,
-                    restrictions);
-            return cb.and(restrictions.toArray(new Predicate[0]));
+            filterParser.parseFilter(filter);
+            return cb.and(filterParser.getRestrictionsArray());
         };
     }
 
