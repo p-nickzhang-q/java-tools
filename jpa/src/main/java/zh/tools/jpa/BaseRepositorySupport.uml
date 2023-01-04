@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>zh.tools.jpa.BaseRepositorySupport</OriginalElement>
+  <nodes>
+    <node x="1519.5" y="948.0">zh.tools.jpa.filterparse.BetweenParse</node>
+    <node x="0.0" y="0.0">zh.tools.jpa.enums.SpecOperator</node>
+    <node x="885.4999999999999" y="960.0">zh.tools.jpa.filterparse.NullParse</node>
+    <node x="1302.5" y="960.0">zh.tools.jpa.filterparse.MapParse</node>
+    <node x="961.0" y="1227.0">zh.tools.jpa.JpaFilterRequest</node>
+    <node x="1976.5" y="960.0">zh.tools.jpa.filterparse.NotNullParse</node>
+    <node x="0.0" y="1102.0">zh.tools.jpa.filterparse.GreaterThanParse</node>
+    <node x="483.0" y="1102.0">zh.tools.jpa.filterparse.LessThanParse</node>
+    <node x="295.5" y="960.0">zh.tools.jpa.filterparse.CompareParse</node>
+    <node x="1413.25" y="748.0">zh.tools.jpa.filterparse.FilterParse</node>
+    <node x="1941.0" y="1227.0">zh.tools.jpa.BaseRepositorySupport</node>
+    <node x="1745.5" y="960.0">zh.tools.jpa.filterparse.NotEqualParse</node>
+    <node x="668.4999999999999" y="960.0">zh.tools.jpa.filterparse.EqualParse</node>
+    <node x="249.0" y="1102.0">zh.tools.jpa.filterparse.LessEqualParse</node>
+    <node x="618.5" y="1496.0">zh.tools.jpa.SpecCompare.Compare</node>
+    <node x="526.0" y="1227.0">zh.tools.jpa.SpecCompare</node>
+    <node x="2198.5" y="960.0">zh.tools.jpa.filterparse.BaseParse</node>
+    <node x="435.0" y="0.0">zh.tools.jpa.FilterParser</node>
+    <node x="2415.5" y="948.5">zh.tools.jpa.filterparse.ListParse</node>
+    <node x="0.0" y="1227.0">zh.tools.jpa.BaseFilterService</node>
+    <node x="1085.5" y="960.0">zh.tools.jpa.filterparse.FuzzyParse</node>
+    <node x="490.5" y="407.0">zh.tools.jpa.FilterParser.CreateRestriction</node>
+    <node x="712.9999999999999" y="1102.0">zh.tools.jpa.filterparse.GreaterEqualParse</node>
+    <node x="1204.0" y="1227.0">zh.tools.jpa.SearchHook</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="zh.tools.jpa.filterparse.EqualParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="766.9999999999999" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.BetweenParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-52.0" />
+      <point x="1622.5" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.MapParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="1401.0" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.BaseParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="2297.0" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.LessThanParse" target="zh.tools.jpa.filterparse.CompareParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="588.0" y="1077.0" />
+      <point x="472.0" y="1077.0" />
+      <point x="0.0" y="40.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.GreaterThanParse" target="zh.tools.jpa.filterparse.CompareParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="114.5" y="1077.0" />
+      <point x="472.0" y="1077.0" />
+      <point x="0.0" y="40.0" />
+    </edge>
+    <edge source="zh.tools.jpa.FilterParser.CreateRestriction" target="zh.tools.jpa.FilterParser" relationship="INNER_CLASS">
+      <point x="0.0" y="-28.0" />
+      <point x="0.0" y="178.5" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.NullParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="1.1368683772161603E-13" y="-40.0" />
+      <point x="975.5" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.GreaterEqualParse" target="zh.tools.jpa.filterparse.CompareParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="829.4999999999999" y="1077.0" />
+      <point x="472.0" y="1077.0" />
+      <point x="0.0" y="40.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.LessEqualParse" target="zh.tools.jpa.filterparse.CompareParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="356.0" y="1077.0" />
+      <point x="472.0" y="1077.0" />
+      <point x="0.0" y="40.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.NotEqualParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="1851.0" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.FuzzyParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="1184.0" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.NotNullParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="2077.5" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.CompareParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-40.0" />
+      <point x="472.0" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.filterparse.ListParse" target="zh.tools.jpa.filterparse.FilterParse" relationship="GENERALIZATION">
+      <point x="0.0" y="-51.5" />
+      <point x="2587.5" y="923.0" />
+      <point x="1511.75" y="923.0" />
+      <point x="0.0" y="75.0" />
+    </edge>
+    <edge source="zh.tools.jpa.SpecCompare.Compare" target="zh.tools.jpa.SpecCompare" relationship="INNER_CLASS">
+      <point x="0.0" y="-28.0" />
+      <point x="0.0" y="109.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.8572934973637961" showDependencies="false" x="537.0705207052071" y="1322.0742107421074" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

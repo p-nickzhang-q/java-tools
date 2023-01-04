@@ -5,8 +5,8 @@ import zh.tools.jpa.SpecCompare;
 
 import javax.persistence.criteria.CriteriaBuilder;
 
-public class LessEqualParse extends CompareParse {
-    public LessEqualParse(FilterParser filterParser) {
+public class LessThanParse extends CompareParse {
+    public LessThanParse(FilterParser filterParser) {
         super(filterParser);
     }
 
@@ -15,7 +15,7 @@ public class LessEqualParse extends CompareParse {
         CriteriaBuilder criteriaBuilder = filterParser.getCriteriaBuilder();
         processCompare(field,
                 value,
-                new SpecCompare(criteriaBuilder::lessThanOrEqualTo,
-                        criteriaBuilder::lessThanOrEqualTo));
+                new SpecCompare(criteriaBuilder::lessThan,
+                        criteriaBuilder::lessThan));
     }
 }
