@@ -33,7 +33,7 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
     }
 
     protected Specification<T> parseFilter2Spec(Map<String, Object> filter) {
-        SearchHook<T> searchHook = new SearchHook<>() {
+        SearchHook<T> searchHook = new SearchHook<T>() {
         };
         return parseFilter2Spec(filter,
                 searchHook);

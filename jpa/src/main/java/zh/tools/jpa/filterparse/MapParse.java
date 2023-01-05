@@ -40,16 +40,17 @@ public class MapParse extends FilterParse {
                 String childKey = entry.getKey();
                 Object childValue = entry.getValue();
                 Optional<SpecOperator> operatorOptional = SpecOperator.getByOperator(childKey);
-                operatorOptional.ifPresentOrElse(specOperator -> {
-                            specOperator.getParseInstanceAndParse(field,
+                if (operatorOptional.isPresent()) {
+                    operatorOptional
+                            .get()
+                            .getParseInstanceAndParse(field,
                                     childValue,
                                     filterParser);
-                        },
-                        () -> {
-                            FilterParser childFilterParser = filterParser.cloneWithCriteriaBuilderAndSetRoot(root.get(field));
-                            childFilterParser.parseFilter(value);
-                            restrictions.addAll(childFilterParser.getRestrictions());
-                        });
+                } else {
+                    FilterParser childFilterParser = filterParser.cloneWithCriteriaBuilderAndSetRoot(root.get(field));
+                    childFilterParser.parseFilter(value);
+                    restrictions.addAll(childFilterParser.getRestrictions());
+                }
             }
         }
     }

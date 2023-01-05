@@ -30,27 +30,29 @@ public class ListParse extends FilterParse {
     public void parse(String field, Object value) {
         List<Object> values = (List<Object>) value;
         Optional<SpecOperator> operatorOptional = SpecOperator.getByOperator(field);
-        operatorOptional.ifPresentOrElse(specOperator -> {
-                    if (specOperator.is(SpecOperator.AND)) {
-                        parseFilters(values,
-                                cloneFilterParser -> {
-                                    filterParser.addRestriction((root, criteriaBuilder) -> criteriaBuilder.and(cloneFilterParser.getRestrictionsArray()));
-                                });
-                    } else if (specOperator.is(SpecOperator.OR)) {
-                        parseFilters(values,
-                                cloneFilterParser -> {
-                                    filterParser.addRestriction((root, criteriaBuilder) -> criteriaBuilder.or(cloneFilterParser.getRestrictionsArray()));
-                                });
-                    }
-                },
-                () -> filterParser.addRestriction((root, criteriaBuilder) -> {
-                    CriteriaBuilder.In<Object> in = criteriaBuilder.in(root.get(field));
-                    for (Object cv : values) {
-                        cv = filterParser.ifEnumThenTransformValue(field,
-                                cv);
-                        in.value(cv);
-                    }
-                    return in;
-                }));
+        if (operatorOptional.isPresent()) {
+            SpecOperator specOperator = operatorOptional.get();
+            if (specOperator.is(SpecOperator.AND)) {
+                parseFilters(values,
+                        cloneFilterParser -> {
+                            filterParser.addRestriction((root, criteriaBuilder) -> criteriaBuilder.and(cloneFilterParser.getRestrictionsArray()));
+                        });
+            } else if (specOperator.is(SpecOperator.OR)) {
+                parseFilters(values,
+                        cloneFilterParser -> {
+                            filterParser.addRestriction((root, criteriaBuilder) -> criteriaBuilder.or(cloneFilterParser.getRestrictionsArray()));
+                        });
+            }
+        } else {
+            filterParser.addRestriction((root, criteriaBuilder) -> {
+                CriteriaBuilder.In<Object> in = criteriaBuilder.in(root.get(field));
+                for (Object cv : values) {
+                    cv = filterParser.ifEnumThenTransformValue(field,
+                            cv);
+                    in.value(cv);
+                }
+                return in;
+            });
+        }
     }
 }

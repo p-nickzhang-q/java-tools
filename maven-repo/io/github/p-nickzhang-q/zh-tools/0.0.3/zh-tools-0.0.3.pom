@@ -52,6 +52,18 @@
             <artifactId>hutool-all</artifactId>
             <version>5.4.7</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <!--Junit4 相关的包,要排除掉,会影响开发,引用错类-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <properties>

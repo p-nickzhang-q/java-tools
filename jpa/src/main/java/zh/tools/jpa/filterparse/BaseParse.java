@@ -19,21 +19,22 @@ public class BaseParse extends FilterParse {
         if (value instanceof String) {
             if (StrUtil.isNotBlank(value.toString())) {
                 Optional<SpecOperator> operatorOptional = SpecOperator.getByOperator(value.toString());
-                operatorOptional.ifPresentOrElse(specOperator -> {
-                            specOperator.getParseInstanceAndParse(field,
+                if (operatorOptional.isPresent()) {
+                    operatorOptional
+                            .get()
+                            .getParseInstanceAndParse(field,
                                     filterParser);
-                        },
-                        () -> {
-                            if (isFuzzy) {
-                                SpecOperator.Fuzzy.getParseInstanceAndParse(field,
-                                        value,
-                                        filterParser);
-                            } else {
-                                SpecOperator.EQ.getParseInstanceAndParse(field,
-                                        value,
-                                        filterParser);
-                            }
-                        });
+                } else {
+                    if (isFuzzy) {
+                        SpecOperator.Fuzzy.getParseInstanceAndParse(field,
+                                value,
+                                filterParser);
+                    } else {
+                        SpecOperator.EQ.getParseInstanceAndParse(field,
+                                value,
+                                filterParser);
+                    }
+                }
             }
         } else {
             SpecOperator.EQ.getParseInstanceAndParse(field,
