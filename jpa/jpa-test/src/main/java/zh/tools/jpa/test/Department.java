@@ -21,8 +21,4 @@ public class Department {
 
     public Department() {
     }
-
-    public static Department empty() {
-        return new Department();
-    }
 }

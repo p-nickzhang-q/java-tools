@@ -8,23 +8,21 @@ import zh.tools.common.map.FilterMap;
 
 import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class BaseFilterService<T, ID extends Serializable> {
 
     public abstract BaseRepositorySupport<T, ID> repository();
 
     protected Specification<T> parseFilter2Spec(Map<String, Object> filter, SearchHook<T> searchHook) {
-        if (searchHook == null) {
-            searchHook = new SearchHook<T>() {
-            };
-        }
-        SearchHook<T> finalSearchHook = searchHook;
         return (root, criteriaQuery, cb) -> {
             FilterParser filterParser = new FilterParser(root,
                     cb);
             List<Predicate> restrictions = filterParser.getRestrictions();
-            finalSearchHook.beforeParseFilter(restrictions,
+            searchHook.beforeParseFilter(restrictions,
                     root,
                     criteriaQuery,
                     cb,
@@ -34,54 +32,54 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
         };
     }
 
+    protected Specification<T> parseFilter2Spec(Map<String, Object> filter) {
+        SearchHook<T> searchHook = new SearchHook<>() {
+        };
+        return parseFilter2Spec(filter,
+                searchHook);
+    }
+
     public Page<T> filter(Map<String, Object> filter, Pageable pageable) {
-        Specification<T> spec = parseFilter2Spec(filter,
-                null);
+        Specification<T> spec = parseFilter2Spec(filter);
         return repository()
                 .findAll(spec,
                         pageable);
     }
 
     public Page<T> filter(JpaFilterRequest jpaFilterRequest) {
-        Specification<T> spec = parseFilter2Spec(jpaFilterRequest.getFilter(),
-                null);
+        Specification<T> spec = parseFilter2Spec(jpaFilterRequest.getFilter());
         return repository()
                 .findAll(spec,
                         jpaFilterRequest.toPage());
     }
 
     public List<T> filter(Map<String, Object> filter) {
-        Specification<T> spec = parseFilter2Spec(filter,
-                null);
+        Specification<T> spec = parseFilter2Spec(filter);
         return repository()
                 .findAll(spec);
     }
 
     public List<T> filter() {
-        Specification<T> spec = parseFilter2Spec(new FilterMap<>(),
-                null);
+        Specification<T> spec = parseFilter2Spec(new FilterMap<>());
         return repository()
                 .findAll(spec);
     }
 
     public Optional<T> filterOne(Map<String, Object> filter) {
-        Specification<T> spec = parseFilter2Spec(filter,
-                null);
+        Specification<T> spec = parseFilter2Spec(filter);
         return repository()
                 .findOne(spec);
     }
 
     public List<T> filter(Map<String, Object> filter, Sort sort) {
-        Specification<T> spec = parseFilter2Spec(filter,
-                null);
+        Specification<T> spec = parseFilter2Spec(filter);
         return repository()
                 .findAll(spec,
                         sort);
     }
 
     public Long count(Map<String, Object> filter) {
-        Specification<T> spec = parseFilter2Spec(filter,
-                null);
+        Specification<T> spec = parseFilter2Spec(filter);
         return repository()
                 .count(spec);
     }
