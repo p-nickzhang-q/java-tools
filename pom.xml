@@ -11,6 +11,7 @@
         <module>pdf</module>
         <module>all</module>
         <module>mybatis-plus</module>
+        <module>test</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -30,6 +30,6 @@ public class FilterRequest {
     @Data
     public static class Order {
         private String sortProperty = "id";
-        private Direction direction = Direction.ASC;
+        private Direction direction = Direction.DESC;
     }
 }

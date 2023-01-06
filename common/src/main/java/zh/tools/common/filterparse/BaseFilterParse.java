@@ -1,15 +1,10 @@
-package zh.tools.jpa.filterparse;
+package zh.tools.common.filterparse;
 
 import cn.hutool.core.exceptions.ValidateException;
-import lombok.Getter;
 
-@Getter
-public class FilterParse {
-    protected final FilterParser filterParser;
+public abstract class BaseFilterParse {
 
-    public FilterParse(FilterParser filterParser) {
-        this.filterParser = filterParser;
-    }
+    public abstract ParseStrategy getParseStrategy();
 
     public void parse(String field, Object value) {
         throw new ValidateException("未实现FilterParse逻辑");
@@ -18,5 +13,4 @@ public class FilterParse {
     public void parse(String field) {
         throw new ValidateException("未实现FilterParse逻辑");
     }
-
 }

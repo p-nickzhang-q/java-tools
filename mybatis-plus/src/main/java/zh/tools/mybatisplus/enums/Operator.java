@@ -1,16 +1,16 @@
-package zh.tools.jpa.enums;
+package zh.tools.mybatisplus.enums;
 
 import cn.hutool.core.bean.DynaBean;
 import lombok.Getter;
-import zh.tools.jpa.filterparse.FilterParser;
-import zh.tools.jpa.filterparse.impl.*;
+import zh.tools.common.filterparse.ParseStrategy;
+import zh.tools.mybatisplus.filterparse.impl.*;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
 @Getter
-public enum SpecOperator {
+public enum Operator {
     START("$start",
             GreaterEqualParse.class), GE("$ge",
             GreaterEqualParse.class), GT("$gt",
@@ -22,44 +22,44 @@ public enum SpecOperator {
             NotEqualParse.class), EQ("$eq",
             EqualParse.class), OR("$or"), AND("$and"), N("$n",
             NullParse.class), NN("$nn",
-            NotNullParse.class), Fuzzy(FuzzyParse.class), List(ListParse.class), Map(MapParse.class), Base(BaseParse.class),
+            NotNullParse.class), Fuzzy(FuzzyParse.class), List(ListParse.class), Map(MapParse.class), Base(BaseParseMyBatisPlus.class),
     ;
 
     private String operator;
     private Class<?> parseClass;
 
-    SpecOperator(String operator) {
+    Operator(String operator) {
         this.operator = operator;
     }
 
-    SpecOperator(Class<?> parseClass) {
+    Operator(Class<?> parseClass) {
         this.parseClass = parseClass;
     }
 
-    SpecOperator(String operator, Class<?> parseClass) {
+    Operator(String operator, Class<?> parseClass) {
         this.operator = operator;
         this.parseClass = parseClass;
     }
 
-    public static Optional<SpecOperator> getByOperator(String operator) {
+    public static Optional<Operator> getByOperator(String operator) {
         return Arrays
-                .stream(SpecOperator.values())
+                .stream(Operator.values())
                 .filter(specOperator -> Objects.equals(specOperator.getOperator(),
                         operator))
                 .findFirst();
     }
 
-    public void getParseInstanceAndParse(String key, Object childValue, FilterParser filterParser) {
+    public void getParseInstanceAndParse(String key, Object childValue, ParseStrategy parseStrategy) {
         DynaBean dynaBean = DynaBean.create(getParseClass(),
-                filterParser);
+                parseStrategy);
         dynaBean.invoke("parse",
                 key,
                 childValue);
     }
 
-    public void getParseInstanceAndParse(String key, FilterParser filterParser) {
+    public void getParseInstanceAndParse(String key, ParseStrategy parseStrategy) {
         DynaBean dynaBean = DynaBean.create(getParseClass(),
-                filterParser);
+                parseStrategy);
         dynaBean.invoke("parse",
                 key);
     }
@@ -68,9 +68,7 @@ public enum SpecOperator {
         return is(OR) || is(AND);
     }
 
-    public boolean is(SpecOperator operator) {
+    public boolean is(Operator operator) {
         return this.equals(operator);
     }
-
-
 }

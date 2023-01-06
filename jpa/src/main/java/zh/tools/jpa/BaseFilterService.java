@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import zh.tools.common.map.FilterMap;
+import zh.tools.jpa.filterparse.FilterParser;
 
 import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
