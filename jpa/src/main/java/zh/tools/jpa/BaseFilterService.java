@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import zh.tools.common.map.FilterMap;
-import zh.tools.jpa.filterparse.FilterParser;
 
 import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
@@ -20,16 +19,16 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
 
     protected Specification<T> parseFilter2Spec(Map<String, Object> filter, SearchHook<T> searchHook) {
         return (root, criteriaQuery, cb) -> {
-            FilterParser filterParser = new FilterParser(root,
+            JpaStrategy jpaStrategy = new JpaStrategy(root,
                     cb);
-            List<Predicate> restrictions = filterParser.getRestrictions();
+            List<Predicate> restrictions = jpaStrategy.getRestrictions();
             searchHook.beforeParseFilter(restrictions,
                     root,
                     criteriaQuery,
                     cb,
                     new FilterMap<>(filter));
-            filterParser.parseFilter(filter);
-            return cb.and(filterParser.getRestrictionsArray());
+            jpaStrategy.parseFilter(filter);
+            return cb.and(jpaStrategy.getRestrictionsArray());
         };
     }
 

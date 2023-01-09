@@ -1,9 +1,10 @@
-package zh.tools.mybatisplus.filterparse;
+package zh.tools.mybatisplus;
 
+import cn.hutool.core.exceptions.ValidateException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.Getter;
 import zh.tools.common.filterparse.ParseStrategy;
-import zh.tools.mybatisplus.enums.Operator;
+import zh.tools.common.filterparse.enums.Operator;
 
 import java.util.List;
 import java.util.Map;
@@ -191,5 +192,10 @@ public class MyBatisPlusStrategy implements ParseStrategy {
     public void in(String field, List<Object> values) {
         queryWrapper.in(field,
                 values);
+    }
+
+    @Override
+    public void childEntityProcess(String field, Map<String, Object> value) {
+        throw new ValidateException("子对象处理未实现");
     }
 }

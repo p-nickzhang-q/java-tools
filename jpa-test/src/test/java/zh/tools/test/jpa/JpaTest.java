@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import zh.tools.common.filterparse.enums.Operator;
 import zh.tools.common.map.FilterMap;
-import zh.tools.jpa.enums.SpecOperator;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class JpaTest {
         List<User> users = userService.filter(FilterMap
                 .newFilterMap()
                 .wrapper("age",
-                        filterMap -> filterMap.set(SpecOperator.LT.getOperator(),
+                        filterMap -> filterMap.set(Operator.LT.getOperator(),
                                 "id")));
         logInfo(users);
     }
@@ -79,7 +79,7 @@ public class JpaTest {
         List<User> users = userService.filter(FilterMap
                 .newFilterMap()
                 .wrapper("age",
-                        filterMap -> filterMap.set(SpecOperator.GT.getOperator(),
+                        filterMap -> filterMap.set(Operator.GT.getOperator(),
                                 10)));
         logInfo(users);
     }
@@ -89,7 +89,7 @@ public class JpaTest {
         List<User> users = userService.filter(FilterMap
                 .newFilterMap()
                 .wrapper("age",
-                        filterMap -> filterMap.set(SpecOperator.BETWEEN.getOperator(),
+                        filterMap -> filterMap.set(Operator.BETWEEN.getOperator(),
                                 Arrays.asList(12,
                                         20))));
         logInfo(users);
@@ -116,7 +116,7 @@ public class JpaTest {
         logInfo(userService.filter(FilterMap
                 .newFilterMap()
                 .wrapper("name",
-                        map -> map.set(SpecOperator.NE.getOperator(),
+                        map -> map.set(Operator.NE.getOperator(),
                                 "zhang san"))));
     }
 
@@ -130,12 +130,12 @@ public class JpaTest {
         logInfo(userService.filter(FilterMap
                 .newFilterMap()
                 .set("birthDate",
-                        SpecOperator.N.getOperator())));
+                        Operator.N.getOperator())));
         userService
                 .filterOne(FilterMap
                         .newFilterMap()
                         .set("birthDate",
-                                SpecOperator.NN.getOperator()))
+                                Operator.NN.getOperator()))
                 .ifPresent(this::logInfo);
     }
 
@@ -152,7 +152,7 @@ public class JpaTest {
     public void testOr() {
         logInfo(userService.filter(FilterMap
                 .newFilterMap()
-                .wrapper(SpecOperator.OR.getOperator(),
+                .wrapper(Operator.OR.getOperator(),
                         map -> {
                             map
                                     .set("age",
@@ -162,7 +162,7 @@ public class JpaTest {
                         })));
         logInfo(userService.filter(FilterMap
                 .newFilterMap()
-                .wrapList(SpecOperator.OR.getOperator(),
+                .wrapList(Operator.OR.getOperator(),
                         list -> {
                             list.add(FilterMap
                                     .newFilterMap()

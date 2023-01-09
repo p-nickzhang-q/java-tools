@@ -1,8 +1,8 @@
-package zh.tools.mybatisplus.filterparse.impl;
+package zh.tools.common.filterparse.filterparse;
 
 import zh.tools.common.filterparse.BaseFilterParse;
 import zh.tools.common.filterparse.ParseStrategy;
-import zh.tools.mybatisplus.enums.Operator;
+import zh.tools.common.filterparse.enums.Operator;
 
 import java.util.List;
 import java.util.Optional;

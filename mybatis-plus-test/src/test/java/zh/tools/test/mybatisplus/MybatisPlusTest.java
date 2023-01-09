@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import zh.tools.common.filterparse.enums.Operator;
 import zh.tools.common.map.FilterMap;
 import zh.tools.common.paging.FilterRequest;
-import zh.tools.mybatisplus.enums.Operator;
 
 import java.time.LocalDate;
 import java.util.Arrays;

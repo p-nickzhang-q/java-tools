@@ -1,17 +1,16 @@
-package zh.tools.mybatisplus.filterparse.impl;
+package zh.tools.common.filterparse.filterparse;
 
 import zh.tools.common.filterparse.BaseFilterParse;
 import zh.tools.common.filterparse.ParseStrategy;
 
-public class GreaterThanParse extends BaseFilterParse {
-
-    public GreaterThanParse(ParseStrategy parseStrategy) {
+public class GreaterEqualParse extends BaseFilterParse {
+    public GreaterEqualParse(ParseStrategy parseStrategy) {
         super(parseStrategy);
     }
 
     @Override
     public void parse(String field, Object value) {
-        parseStrategy.greaterThan(field,
+        parseStrategy.greaterEqual(field,
                 value);
     }
 }

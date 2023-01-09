@@ -1,8 +1,7 @@
-package zh.tools.mybatisplus.filterparse.impl;
+package zh.tools.common.filterparse.filterparse;
 
-import cn.hutool.core.exceptions.ValidateException;
 import zh.tools.common.filterparse.ParseStrategy;
-import zh.tools.mybatisplus.enums.Operator;
+import zh.tools.common.filterparse.enums.Operator;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,9 +32,8 @@ public class MapParse extends BaseParse {
                                     childValue,
                                     parseStrategy);
                 } else {
-                    // todo 子对象处理
-                    throw new ValidateException(String.format("不支持操作符[%s]",
-                            childKey));
+                    parseStrategy.childEntityProcess(field,
+                            value);
                 }
             });
         }

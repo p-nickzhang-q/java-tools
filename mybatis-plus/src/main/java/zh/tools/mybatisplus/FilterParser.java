@@ -1,4 +1,4 @@
-package zh.tools.mybatisplus.filterparse;
+package zh.tools.mybatisplus;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import zh.tools.common.map.FilterMap;

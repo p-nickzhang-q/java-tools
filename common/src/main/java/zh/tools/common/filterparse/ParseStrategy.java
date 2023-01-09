@@ -18,10 +18,8 @@ public interface ParseStrategy {
 
     void lessEqual(String field, Object value);
 
-    /*专门用于日期字符串,会拼接上 00:00:00 */
     void start(String field, String value);
 
-    /*专门用于日期字符串,会拼接上 23:59:59 */
     void end(String field, String value);
 
     void notEqual(String field, Object value);
@@ -42,4 +40,5 @@ public interface ParseStrategy {
 
     void in(String field, List<Object> values);
 
+    void childEntityProcess(String field, Map<String, Object> value);
 }

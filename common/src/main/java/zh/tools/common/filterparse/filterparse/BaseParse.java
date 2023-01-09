@@ -1,15 +1,17 @@
-package zh.tools.jpa.filterparse.impl;
+package zh.tools.common.filterparse.filterparse;
 
 import cn.hutool.core.util.StrUtil;
-import zh.tools.jpa.enums.SpecOperator;
-import zh.tools.jpa.filterparse.FilterParse;
-import zh.tools.jpa.filterparse.FilterParser;
+import zh.tools.common.filterparse.BaseFilterParse;
+import zh.tools.common.filterparse.ParseStrategy;
+import zh.tools.common.filterparse.enums.Operator;
 
 import java.util.Optional;
 
-public class BaseParse extends FilterParse {
-    public BaseParse(FilterParser filterParser) {
-        super(filterParser);
+public class BaseParse extends BaseFilterParse {
+
+
+    public BaseParse(ParseStrategy parseStrategy) {
+        super(parseStrategy);
     }
 
     @Override
@@ -22,28 +24,28 @@ public class BaseParse extends FilterParse {
             String valueString = value.toString();
             boolean isFuzzy = valueString.contains("%");
             if (StrUtil.isNotBlank(valueString)) {
-                Optional<SpecOperator> operatorOptional = SpecOperator.getByOperator(valueString);
+                Optional<Operator> operatorOptional = Operator.getByOperator(valueString);
                 if (operatorOptional.isPresent()) {
                     operatorOptional
                             .get()
                             .getParseInstanceAndParse(field,
-                                    filterParser);
+                                    parseStrategy);
                 } else {
                     if (isFuzzy) {
-                        SpecOperator.Fuzzy.getParseInstanceAndParse(field,
+                        Operator.Fuzzy.getParseInstanceAndParse(field,
                                 valueString,
-                                filterParser);
+                                parseStrategy);
                     } else {
-                        SpecOperator.EQ.getParseInstanceAndParse(field,
+                        Operator.EQ.getParseInstanceAndParse(field,
                                 valueString,
-                                filterParser);
+                                parseStrategy);
                     }
                 }
             }
         } else {
-            SpecOperator.EQ.getParseInstanceAndParse(field,
+            Operator.EQ.getParseInstanceAndParse(field,
                     value,
-                    filterParser);
+                    parseStrategy);
         }
     }
 }

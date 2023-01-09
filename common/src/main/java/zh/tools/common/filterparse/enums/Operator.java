@@ -1,9 +1,9 @@
-package zh.tools.mybatisplus.enums;
+package zh.tools.common.filterparse.enums;
 
 import cn.hutool.core.bean.DynaBean;
 import lombok.Getter;
 import zh.tools.common.filterparse.ParseStrategy;
-import zh.tools.mybatisplus.filterparse.impl.*;
+import zh.tools.common.filterparse.filterparse.*;
 
 import java.util.Arrays;
 import java.util.Objects;

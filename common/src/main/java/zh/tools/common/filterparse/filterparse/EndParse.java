@@ -1,4 +1,4 @@
-package zh.tools.mybatisplus.filterparse.impl;
+package zh.tools.common.filterparse.filterparse;
 
 import zh.tools.common.filterparse.BaseFilterParse;
 import zh.tools.common.filterparse.ParseStrategy;
