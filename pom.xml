@@ -11,7 +11,8 @@
         <module>pdf</module>
         <module>all</module>
         <module>mybatis-plus</module>
-        <module>test</module>
+        <module>jpa-test</module>
+        <module>mybatis-plus-test</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

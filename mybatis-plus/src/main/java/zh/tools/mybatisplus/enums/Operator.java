@@ -12,17 +12,17 @@ import java.util.Optional;
 @Getter
 public enum Operator {
     START("$start",
-            GreaterEqualParse.class), GE("$ge",
+            StartParse.class), GE("$ge",
             GreaterEqualParse.class), GT("$gt",
             GreaterThanParse.class), LT("$lt",
             LessThanParse.class), END("$end",
-            LessEqualParse.class), LE("$le",
+            EndParse.class), LE("$le",
             LessEqualParse.class), BETWEEN("$between",
             BetweenParse.class), NE("$ne",
             NotEqualParse.class), EQ("$eq",
             EqualParse.class), OR("$or"), AND("$and"), N("$n",
             NullParse.class), NN("$nn",
-            NotNullParse.class), Fuzzy(FuzzyParse.class), List(ListParse.class), Map(MapParse.class), Base(BaseParseMyBatisPlus.class),
+            NotNullParse.class), Fuzzy(FuzzyParse.class), List(ListParse.class), Map(MapParse.class), Base(BaseParse.class),
     ;
 
     private String operator;

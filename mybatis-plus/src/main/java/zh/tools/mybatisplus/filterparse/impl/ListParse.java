@@ -1,16 +1,17 @@
 package zh.tools.mybatisplus.filterparse.impl;
 
+import zh.tools.common.filterparse.BaseFilterParse;
+import zh.tools.common.filterparse.ParseStrategy;
 import zh.tools.mybatisplus.enums.Operator;
-import zh.tools.mybatisplus.filterparse.MyBatisPlusFilterParse;
-import zh.tools.mybatisplus.filterparse.MyBatisPlusStrategy;
 
 import java.util.List;
 import java.util.Optional;
 
-public class ListParse extends MyBatisPlusFilterParse {
+public class ListParse extends BaseFilterParse {
 
-    public ListParse(MyBatisPlusStrategy myBatisPlusStrategy) {
-        super(myBatisPlusStrategy);
+
+    public ListParse(ParseStrategy parseStrategy) {
+        super(parseStrategy);
     }
 
     @Override
@@ -19,7 +20,14 @@ public class ListParse extends MyBatisPlusFilterParse {
         Optional<Operator> operatorOptional = Operator.getByOperator(field);
         if (operatorOptional.isPresent()) {
             Operator operator = operatorOptional.get();
-
+            if (operator.is(Operator.AND)) {
+                parseStrategy.and(values);
+            } else if (operator.is(Operator.OR)) {
+                parseStrategy.or(values);
+            }
+        } else {
+            parseStrategy.in(field,
+                    values);
         }
     }
 }
