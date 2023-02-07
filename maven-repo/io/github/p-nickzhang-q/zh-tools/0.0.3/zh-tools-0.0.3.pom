@@ -11,6 +11,8 @@
         <module>pdf</module>
         <module>all</module>
         <module>mybatis-plus</module>
+        <module>jpa-test</module>
+        <module>mybatis-plus-test</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -99,5 +101,20 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>ci</id>
+            <modules>
+                <module>common</module>
+                <module>excel</module>
+                <module>jpa</module>
+                <module>word</module>
+                <module>pdf</module>
+                <module>all</module>
+                <module>mybatis-plus</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

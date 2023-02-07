@@ -1,5 +1,6 @@
 package zh.tools.common.time;
 
+import cn.hutool.core.lang.Console;
 import lombok.Getter;
 
 import java.time.DayOfWeek;
@@ -8,6 +9,7 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Arrays;
 import java.util.function.Function;
 
 @Getter
@@ -51,14 +53,18 @@ public enum TimeRangeType {
         Long[] range = new Long[2];
         LocalDateTime temp = LocalDateTime.of(localDateTime
                         .toLocalDate()
-                        .with(DayOfWeek.SUNDAY),
+                        .with(DayOfWeek.MONDAY),
                 LocalTime.MIN);
         range[0] = TimeProcess
                 .of(temp)
                 .toLong();
-        range[1] = range[0] + ChronoUnit.WEEKS
-                .getDuration()
-                .toMillis() - 1;
+        temp = LocalDateTime.of(localDateTime
+                        .toLocalDate()
+                        .with(DayOfWeek.SUNDAY),
+                LocalTime.MAX);
+        range[1] = TimeProcess
+                .of(temp)
+                .toLong();
         return range;
     }), MONTH(localDateTime -> {
         Long[] range = new Long[2];
@@ -69,9 +75,11 @@ public enum TimeRangeType {
         range[0] = TimeProcess
                 .of(temp)
                 .toLong();
-        range[1] = range[0] + ChronoUnit.MONTHS
-                .getDuration()
-                .toMillis() - 1;
+        temp = LocalDateTime.of(localDateTime
+                        .toLocalDate()
+                        .with(TemporalAdjusters.lastDayOfMonth()),
+                LocalTime.MIN);
+        range[1] = TimeProcess.of(temp).toLong();
         return range;
     }), QUARTER(localDateTime -> {
         return JavaTimeUtil.quarterRange(YearMonth.from(localDateTime));
@@ -86,9 +94,13 @@ public enum TimeRangeType {
         range[0] = TimeProcess
                 .of(temp)
                 .toLong();
-        range[1] = range[0] + ChronoUnit.YEARS
-                .getDuration()
-                .toMillis() - 1;
+        temp = LocalDateTime.of(localDateTime
+                        .toLocalDate()
+                        .with(TemporalAdjusters.lastDayOfYear()),
+                LocalTime.MAX);
+        range[1] = TimeProcess
+                .of(temp)
+                .toLong();
         return range;
     });
 
@@ -96,5 +108,18 @@ public enum TimeRangeType {
 
     TimeRangeType(Function<LocalDateTime, Long[]> rangeFunction) {
         this.rangeFunction = rangeFunction;
+    }
+
+    public static void main(String[] args) {
+        LocalDateTime now = LocalDateTime.now();
+        Arrays
+                .stream(TimeRangeType.values())
+                .forEach(timeRangeType -> {
+                    Console.log(timeRangeType.name());
+                    Console.log(timeRangeType
+                            .getRangeFunction()
+                            .apply(now));
+                });
+
     }
 }
