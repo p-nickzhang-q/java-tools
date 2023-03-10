@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -17,8 +18,11 @@ import java.util.regex.Pattern;
 public class JpaStrategy implements ParseStrategy {
 
     public final static String DATE_REG = "\\d{4}-\\d{2}-\\d{2}";
+    public static final String DOT = "\\.";
 
     private final Path<?> root;
+
+    private final Map<String, Path<?>> dotRootMap = new HashMap<>();
     private final CriteriaBuilder criteriaBuilder;
     @Getter
     private final List<Predicate> restrictions = new ArrayList<>();
@@ -30,10 +34,18 @@ public class JpaStrategy implements ParseStrategy {
 
     @Override
     public void fuzzy(String field, Object value) {
-        restrictions.add(criteriaBuilder.like(root
-                        .get(field)
+        restrictions.add(criteriaBuilder.like(getPath(field)
                         .as(String.class),
                 value.toString()));
+    }
+
+    private Path<?> getPath(String field) {
+        Path<?> path = root;
+        String[] split = field.split(DOT);
+        for (String s : split) {
+            path = path.get(s);
+        }
+        return path;
     }
 
     @Override
@@ -55,19 +67,18 @@ public class JpaStrategy implements ParseStrategy {
                     temp[1] = JavaTimeUtil.str2LocalDateTime(temp[1].toString());
                 }
             }
-            restrictions.add(criteriaBuilder.between(root.get(field),
+            restrictions.add(criteriaBuilder.between((Path) getPath(field),
                     (Comparable) temp[0],
                     (Comparable) temp[1]));
         }
     }
 
     public Object ifEnumThenTransformValue(String k, Object cv) {
-        if (root
-                .get(k)
+        Path<?> path = getPath(k);
+        if (path
                 .getJavaType()
                 .isEnum()) {
-            Class javaType = root
-                    .get(k)
+            Class javaType = path
                     .getJavaType();
             cv = Enum.valueOf(javaType,
                     cv.toString());
@@ -79,13 +90,13 @@ public class JpaStrategy implements ParseStrategy {
     public void equal(String field, Object value) {
         value = ifEnumThenTransformValue(field,
                 value);
-        restrictions.add(criteriaBuilder.equal(root.get(field),
+        restrictions.add(criteriaBuilder.equal(getPath(field),
                 value));
     }
 
     private void processCompare(String field, Object value, SpecCompare compare) {
         Predicate predicate;
-        Path<Object> path = root.get(field);
+        Path<Object> path = (Path<Object>) getPath(field);
         if (value instanceof String) {
             if (JavaTimeUtil.matchDateReg(value.toString())) {
                 predicate = compare.commonCompare.compare(path,
@@ -156,18 +167,18 @@ public class JpaStrategy implements ParseStrategy {
     public void notEqual(String field, Object value) {
         value = ifEnumThenTransformValue(field,
                 value);
-        restrictions.add(criteriaBuilder.notEqual(root.get(field),
+        restrictions.add(criteriaBuilder.notEqual(getPath(field),
                 value));
     }
 
     @Override
     public void notNull(String field) {
-        restrictions.add(criteriaBuilder.isNotNull(root.get(field)));
+        restrictions.add(criteriaBuilder.isNotNull(getPath(field)));
     }
 
     @Override
     public void nullProcess(String field) {
-        restrictions.add(criteriaBuilder.isNull(root.get(field)));
+        restrictions.add(criteriaBuilder.isNull(getPath(field)));
     }
 
     @Override
@@ -251,7 +262,7 @@ public class JpaStrategy implements ParseStrategy {
 
     @Override
     public void in(String field, List<Object> values) {
-        CriteriaBuilder.In<Object> in = criteriaBuilder.in(root.get(field));
+        CriteriaBuilder.In<Object> in = criteriaBuilder.in(getPath(field));
         for (Object cv : values) {
             cv = ifEnumThenTransformValue(field,
                     cv);
@@ -262,7 +273,7 @@ public class JpaStrategy implements ParseStrategy {
 
     @Override
     public void childEntityProcess(String field, Map<String, Object> value) {
-        JpaStrategy childStrategy = new JpaStrategy(root.get(field),
+        JpaStrategy childStrategy = new JpaStrategy(getPath(field),
                 criteriaBuilder);
         childStrategy.parseFilter(value);
         restrictions.addAll(childStrategy.getRestrictions());

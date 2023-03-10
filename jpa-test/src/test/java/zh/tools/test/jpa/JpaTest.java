@@ -101,12 +101,11 @@ public class JpaTest {
                 .newFilterMap()
                 .set("name",
                         null)));
-        userService
+        logInfo(userService
                 .filterOne(FilterMap
                         .newFilterMap()
                         .set("name",
-                                "zhang san"))
-                .ifPresent(this::logInfo);
+                                "zhang san")));
         userService
                 .filterOne(FilterMap
                         .newFilterMap()
@@ -131,12 +130,11 @@ public class JpaTest {
                 .newFilterMap()
                 .set("birthDate",
                         Operator.N.getOperator())));
-        userService
-                .filterOne(FilterMap
+        logInfo(userService
+                .filter(FilterMap
                         .newFilterMap()
                         .set("birthDate",
-                                Operator.NN.getOperator()))
-                .ifPresent(this::logInfo);
+                                Operator.NN.getOperator())));
     }
 
     @Test
@@ -193,5 +191,11 @@ public class JpaTest {
                             map.set("name",
                                     "IT");
                         })));
+    }
+
+    @Test
+    public void testChildEntity2() {
+        logInfo(userService.filter(FilterMap
+                .newFilterMap().set("department.name", "IT")));
     }
 }
