@@ -14,55 +14,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-@SpringBootTest()
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class JpaTest {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private DepartmentService departmentService;
-
-    private List<User> users;
-    private List<Department> departments;
-
-    @BeforeAll
-    public void init() {
-        Department it = new Department("IT");
-        Department hr = new Department("HR");
-        departments = Arrays.asList(it,
-                hr);
-        departmentService
-                .repository()
-                .saveAll(departments);
-
-        users = Arrays.asList(new User("zhang san",
-                        12,
-                        it),
-                new User("Li si",
-                        18,
-                        it),
-                new User("Wang wu",
-                        22,
-                        hr),
-                new User("zhao si",
-                        25,
-                        LocalDate.now()));
-        userService
-                .repository()
-                .saveAll(users);
-    }
-
-    @AfterAll
-    public void finish() {
-        userService
-                .repository()
-                .deleteAll(users);
-        departmentService
-                .repository()
-                .deleteAll(departments);
-    }
+public class JpaTest extends DataTest {
 
     @Test
     public void testLessThanPath() {
@@ -117,11 +70,6 @@ public class JpaTest {
                 .wrapper("name",
                         map -> map.set(Operator.NE.getOperator(),
                                 "zhang san"))));
-    }
-
-    private void logInfo(Object object) {
-        Console.log("打印信息:");
-        Console.log(object);
     }
 
     @Test

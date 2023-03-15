@@ -22,7 +22,6 @@ public class JpaStrategy implements ParseStrategy {
 
     private final Path<?> root;
 
-    private final Map<String, Path<?>> dotRootMap = new HashMap<>();
     private final CriteriaBuilder criteriaBuilder;
     @Getter
     private final List<Predicate> restrictions = new ArrayList<>();
