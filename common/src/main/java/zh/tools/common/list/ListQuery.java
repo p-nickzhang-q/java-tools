@@ -8,8 +8,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ListQuery<T> {
-    private List<T> list;
-    private final List<Query> queries = new ArrayList<>();
+    private final List<T> list;
+    private List<Query> queries = new ArrayList<>();
 
     private Boolean tempOr = false;
 
@@ -30,7 +30,14 @@ public class ListQuery<T> {
 
 
     public ListQuery<T> eq(Function<T, Object> function, Object value) {
-        Query query = new Query(t -> Objects.equals(function.apply(t), value));
+        return commonProcess(new Query(t -> Objects.equals(function.apply(t), value)));
+    }
+
+    public ListQuery<T> like(Function<T, Object> function, Object value) {
+        return commonProcess(new Query(t -> ((String) function.apply(t)).contains(value.toString())));
+    }
+
+    private ListQuery<T> commonProcess(Query query) {
         tempOrProcess(query);
         queries.add(query);
         return this;
@@ -49,16 +56,22 @@ public class ListQuery<T> {
     }
 
     public List<T> result() {
-        return list.stream().filter(t -> {
-            Predicate<T> temp = o -> true;
-            for (Query query : queries) {
-                if (query.isOr) {
-                    temp = temp.or(query.predicate);
-                } else {
-                    temp = temp.and(query.predicate);
-                }
+        Predicate<T> temp = o -> true;
+        for (Query query : queries) {
+            if (query.isOr) {
+                temp = temp.or(query.predicate);
+            } else {
+                temp = temp.and(query.predicate);
             }
-            return temp.test(t);
+        }
+        Predicate<T> finalTemp = temp;
+        queries = new ArrayList<>();
+        return list.stream().filter(t -> {
+            try {
+                return finalTemp.test(t);
+            } catch (Exception e) {
+                return false;
+            }
         }).collect(Collectors.toList());
     }
 }

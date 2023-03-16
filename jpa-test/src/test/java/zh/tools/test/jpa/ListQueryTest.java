@@ -9,11 +9,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ListQueryTest {
-    @Test
-    public void test() {
+
+
+    List<User> users;
+
+    public void init() {
         Department it = new Department("IT");
         Department hr = new Department("HR");
-        List<User> users = Arrays.asList(new User("zhang san",
+        users = Arrays.asList(new User("zhang san",
                         12,
                         it),
                 new User("Li si",
@@ -25,8 +28,14 @@ public class ListQueryTest {
                 new User("zhao si",
                         25,
                         LocalDate.now()));
+    }
+
+    @Test
+    public void test() {
+        init();
         ListQuery<User> query = new ListQuery<>(users);
-        List<User> list = query.eq(User::getName, "zhang san").or().eq(User::getName, "Li si").result();
-        Console.log(list);
+        Console.log(query.eq(User::getName, "zhang san").or().eq(User::getName, "Li si").result());
+        Console.log(query.eq(user -> user.getDepartment().getName(), "HR").result());
+        Console.log(query.like(User::getName, "zhang").result());
     }
 }

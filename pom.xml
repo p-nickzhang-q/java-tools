@@ -22,14 +22,14 @@
     </parent>
     <groupId>io.github.p-nickzhang-q</groupId>
     <artifactId>zh-tools</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <packaging>pom</packaging>
 
     <distributionManagement>
         <repository>
             <id>local-repo-release</id>
             <name>GitHub Release</name>
-            <url>file://D:/Gitee/java-tools/maven-repo</url>
+            <url>file://home/dev/java-tools/maven-repo</url>
         </repository>
     </distributionManagement>
 
