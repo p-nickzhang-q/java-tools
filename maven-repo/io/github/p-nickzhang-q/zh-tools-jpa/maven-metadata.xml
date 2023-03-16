@@ -3,10 +3,11 @@
   <groupId>io.github.p-nickzhang-q</groupId>
   <artifactId>zh-tools-jpa</artifactId>
   <versioning>
-    <release>0.0.3</release>
+    <release>0.0.4</release>
     <versions>
       <version>0.0.3</version>
+      <version>0.0.4</version>
     </versions>
-    <lastUpdated>20230207054146</lastUpdated>
+    <lastUpdated>20230316031408</lastUpdated>
   </versioning>
 </metadata>
