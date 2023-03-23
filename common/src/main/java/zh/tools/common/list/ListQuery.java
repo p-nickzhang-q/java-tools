@@ -3,6 +3,7 @@ package zh.tools.common.list;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -33,8 +34,31 @@ public class ListQuery<T> {
         return commonProcess(new Query(t -> Objects.equals(function.apply(t), value)));
     }
 
-    public ListQuery<T> like(Function<T, Object> function, Object value) {
-        return commonProcess(new Query(t -> ((String) function.apply(t)).contains(value.toString())));
+    public ListQuery<T> like(Function<T, String> function, Object value) {
+        return commonProcess(new Query(t -> function.apply(t).contains(value.toString())));
+    }
+
+    public <Compare> ListQuery<T> gt(Function<T, Comparable<Compare>> function, Compare comparable) {
+        return commonProcess(new Query(t -> function.apply(t).compareTo(comparable) > 0));
+    }
+
+    public <Compare> ListQuery<T> gte(Function<T, Comparable<Compare>> function, Compare comparable) {
+        return commonProcess(new Query(t -> function.apply(t).compareTo(comparable) >= 0));
+    }
+
+    public <Compare> ListQuery<T> lt(Function<T, Comparable<Compare>> function, Compare comparable) {
+        return commonProcess(new Query(t -> function.apply(t).compareTo(comparable) < 0));
+    }
+
+    public <Compare> ListQuery<T> lte(Function<T, Comparable<Compare>> function, Compare comparable) {
+        return commonProcess(new Query(t -> function.apply(t).compareTo(comparable) <= 0));
+    }
+
+    public <Compare> ListQuery<T> between(Function<T, Comparable<Compare>> function, Compare[] comparable) {
+        return commonProcess(new Query(t -> {
+            Comparable<Compare> apply = function.apply(t);
+            return apply.compareTo(comparable[0]) >= 0 && apply.compareTo(comparable[1]) <= 0;
+        }));
     }
 
     private ListQuery<T> commonProcess(Query query) {
@@ -73,5 +97,9 @@ public class ListQuery<T> {
                 return false;
             }
         }).collect(Collectors.toList());
+    }
+
+    public Optional<T> findFirst() {
+        return this.result().stream().findFirst();
     }
 }

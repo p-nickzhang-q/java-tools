@@ -37,5 +37,10 @@ public class ListQueryTest {
         Console.log(query.eq(User::getName, "zhang san").or().eq(User::getName, "Li si").result());
         Console.log(query.eq(user -> user.getDepartment().getName(), "HR").result());
         Console.log(query.like(User::getName, "zhang").result());
+        Console.log(query.gt(User::getAge, 12).result());
+        Console.log(query.gte(User::getAge, 12).result());
+        Console.log(query.lt(User::getAge, 18).result());
+        Console.log(query.lte(User::getAge, 18).result());
+        Console.log(query.between(User::getAge, new Integer[]{18, 22}).result());
     }
 }
