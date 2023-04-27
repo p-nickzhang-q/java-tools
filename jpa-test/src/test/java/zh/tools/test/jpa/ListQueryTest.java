@@ -33,7 +33,7 @@ public class ListQueryTest {
     @Test
     public void test() {
         init();
-        ListQuery<User> query = new ListQuery<>(users);
+        ListQuery<User> query = ListQuery.of(users);
         Console.log(query.eq(User::getName, "zhang san").or().eq(User::getName, "Li si").result());
         Console.log(query.eq(user -> user.getDepartment().getName(), "HR").result());
         Console.log(query.like(User::getName, "zhang").result());

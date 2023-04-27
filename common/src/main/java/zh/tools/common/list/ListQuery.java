@@ -29,6 +29,10 @@ public class ListQuery<T> {
         this.list = list;
     }
 
+    public static <T> ListQuery<T> of(List<T> list) {
+        return new ListQuery<>(list);
+    }
+
 
     public ListQuery<T> eq(Function<T, Object> function, Object value) {
         return commonProcess(new Query(t -> Objects.equals(function.apply(t), value)));

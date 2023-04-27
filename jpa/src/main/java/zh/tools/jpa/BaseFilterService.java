@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import zh.tools.common.list.ListUtil;
 import zh.tools.common.map.FilterMap;
 
 import javax.persistence.criteria.Predicate;
@@ -148,6 +149,35 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
                 searchHook);
         return repository()
                 .count(spec);
+    }
+
+    public List<T> save(List<T> list) {
+        return ListUtil.iterableToList(repository().saveAll(list));
+    }
+
+    public T save(T entity) {
+        return repository().save(entity);
+    }
+
+    public void removeById(ID id) {
+        repository().deleteById(id);
+    }
+
+    public void remove(T entity) {
+        repository().delete(entity);
+    }
+
+    public void remove(List<T> list) {
+        repository().deleteAll(list);
+    }
+
+    public void removeByIds(List<ID> ids) {
+        List<T> list = ListUtil.iterableToList(repository().findAllById(ids));
+        repository().deleteAll(list);
+    }
+
+    public Optional<T> findById(ID id) {
+        return repository().findById(id);
     }
 
 }

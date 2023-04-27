@@ -9,6 +9,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class ListUtil {
     public static <T, R> List<R> getPropertyList(List<T> value, Function<T, R> getProperty) {
@@ -84,4 +85,7 @@ public class ListUtil {
                 .findFirst();
     }
 
+    public static <T> List<T> iterableToList(Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false).collect(Collectors.toList());
+    }
 }
