@@ -167,7 +167,7 @@ public abstract class ExcelAnalysisEventListener<T> extends AnalysisEventListene
                 }
                 String columnName = String.join("-",
                         excelProperty.value());
-                String property = BeanUtil.getProperty(t,
+                Object property = BeanUtil.getProperty(t,
                         field.getName());
                 if (excelValidate != null) {
                     //required

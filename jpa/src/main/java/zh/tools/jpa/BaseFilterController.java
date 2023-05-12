@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public abstract class BaseFilterController<T, ID extends Serializable> {
-    abstract BaseFilterService<T, ID> getService();
+    public abstract BaseFilterService<T, ID> getService();
 
     @PostMapping
     public T save(@RequestBody T t) {
