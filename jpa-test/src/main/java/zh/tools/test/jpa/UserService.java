@@ -15,4 +15,6 @@ public class UserService extends BaseFilterService<User, Long> {
     public BaseRepositorySupport<User, Long> repository() {
         return userRepository;
     }
+
+
 }

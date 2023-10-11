@@ -1,5 +1,7 @@
 package zh.tools.test.jpa;
 
+import cn.hutool.bloomfilter.bitMap.BitMap;
+import cn.hutool.bloomfilter.bitMap.IntMap;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -21,6 +23,10 @@ public class User {
     private LocalDate birthDate;
     @ManyToOne
     private Department department;
+
+    public enum Tag {
+        vip, mobile, email, male, mac, superVip, lost
+    }
 
     public User(String name, Integer age, Department department) {
         this.name = name;
