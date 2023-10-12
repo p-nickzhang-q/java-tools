@@ -3,7 +3,6 @@ package zh.tools.test.jpa
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import zh.tools.common.map.FilterMap
-import zh.tools.jpa.JpaFilterRequest
 import zh.tools.jpa.PersistentEntities
 import java.time.LocalDate
 
