@@ -1,9 +1,10 @@
 package zh.tools.test.jpa;
 
-import cn.hutool.bloomfilter.bitMap.BitMap;
-import cn.hutool.bloomfilter.bitMap.IntMap;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+import zh.tools.jpa.BaseFilterService;
+import zh.tools.jpa.PersistentEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-public class User {
+public class User implements PersistentEntity<User, Long> {
     @Id
     @GeneratedValue
     private Long id;
@@ -23,6 +24,12 @@ public class User {
     private LocalDate birthDate;
     @ManyToOne
     private Department department;
+
+    @NotNull
+    @Override
+    public Class<? extends BaseFilterService<User, Long>> getClazz() {
+        return UserService.class;
+    }
 
     public enum Tag {
         vip, mobile, email, male, mac, superVip, lost

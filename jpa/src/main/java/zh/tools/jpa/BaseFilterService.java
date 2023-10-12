@@ -9,10 +9,7 @@ import zh.tools.common.map.FilterMap;
 
 import javax.persistence.criteria.Predicate;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class BaseFilterService<T, ID extends Serializable> {
 
@@ -69,7 +66,7 @@ public abstract class BaseFilterService<T, ID extends Serializable> {
     public Optional<T> filterOne(Map<String, Object> filter) {
         Specification<T> spec = parseFilter2Spec(filter);
         return repository()
-                .findOne(spec);
+                .findAll(spec).stream().findFirst();
     }
 
     public List<T> filter(Map<String, Object> filter, Sort sort) {
