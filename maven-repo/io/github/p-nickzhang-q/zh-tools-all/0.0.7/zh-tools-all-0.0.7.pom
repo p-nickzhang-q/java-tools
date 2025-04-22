@@ -37,6 +37,11 @@
             <artifactId>zh-tools-pdf</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.p-nickzhang-q</groupId>
+            <artifactId>map-to-sql</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
