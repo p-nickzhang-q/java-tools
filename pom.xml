@@ -13,6 +13,7 @@
         <module>mybatis-plus</module>
         <module>jpa-test</module>
         <module>mybatis-plus-test</module>
+        <module>map-to-sql</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -115,9 +116,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <args>-Xjvm-default=enable</args>
-                </configuration>
             </plugin>
 
         </plugins>

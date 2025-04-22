@@ -10,12 +10,10 @@ interface PersistentEntities<T, ID : Serializable> {
     val clazz: Class<out BaseFilterService<T, ID>>
     var list: List<T>
 
-    @JvmDefault
     fun save() {
         service().save(list)
     }
 
-    @JvmDefault
     fun remove() {
         service().remove(list)
     }
