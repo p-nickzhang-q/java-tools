@@ -1,10 +1,16 @@
 package zh.tools.maptosql
 
 // 4. 主转换器类
-class JsonToSqlConverter(
+open class JsonToSqlConverter(
     private val dialect: SqlDialect,
     private val entityMappings: Map<String, EntityMapping> = emptyMap()
 ) {
+
+    constructor(dialect: SqlDialect, vararg entityClasses: Class<*>) : this(
+        dialect,
+        AnnotationParser.parseMappings(*entityClasses)
+    )
+
     fun convertToSelect(
         entityName: String,
         jsonCriteria: Map<String, Any?>,
@@ -28,6 +34,14 @@ class JsonToSqlConverter(
         }
 
         return sql
+    }
+
+    fun convertToWhereClause(
+        entityName: String,
+        jsonCriteria: Map<String, Any?>
+    ): String {
+        val mapping = entityMappings[entityName] ?: throw IllegalArgumentException("Unknown entity: $entityName")
+        return buildWhereClause(jsonCriteria, mapping.fieldMappings)
     }
 
     private fun buildWhereClause(criteria: Map<String, Any?>, fieldMappings: Map<String, String>): String {
@@ -99,16 +113,4 @@ class JsonToSqlConverter(
             else -> throw IllegalArgumentException("Unsupported operator: $op")
         }
     }
-}
-
-// 5. 扩展函数，支持从JSON字符串转换
-fun JsonToSqlConverter.convertToSelectFromJson(
-    entityName: String,
-    json: Map<String, Any>,
-    selectFields: String? = null,
-    orderBy: String? = null,
-    offset: Int? = null,
-    limit: Int? = null
-): String {
-    return convertToSelect(entityName, json, selectFields, orderBy, offset, limit)
 }

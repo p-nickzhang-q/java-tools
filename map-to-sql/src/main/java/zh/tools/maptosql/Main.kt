@@ -2,16 +2,15 @@ package zh.tools.maptosql
 
 import java.util.*
 
-@Table(name = "users")
 data class User(
-    @Column val id: Int,
-    @Column val name: String,
-    @Column val age: Int,  // 显式指定列名
-    @Column val birthDate: Date,
-    @Column val role: String,
-    @Column val status: String,
-    @Column val isSuperuser: Boolean,
-    @Column val country: String,
+    val id: Int,
+    val name: String,
+    val age: Int,  // 显式指定列名
+    val birthDate: Date,
+    val role: String,
+    val status: String,
+    val isSuperuser: Boolean,
+    val country: String,
 )
 
 fun main() {
@@ -68,8 +67,8 @@ fun main() {
         }
     }
 
-    val sql = converter.convertToSelectFromJson("User", query)
-    val sql2 = converter.convertToSelectFromJson("User", query2)
+    val sql = converter.convertToSelect("User", query)
+    val sql2 = converter.convertToSelect("User", query2)
     val query4 = mapOf(
         "\$or" to listOf(
             mapOf("age" to mapOf("\$gt" to 20)),
@@ -78,7 +77,7 @@ fun main() {
             )
         )
     )
-    val sql3 = converter.convertToSelectFromJson("User", query3)
+    val sql3 = converter.convertToSelect("User", query3)
 
     println("Generated SQL1: $sql")
     println("Generated SQL2: $sql2")
