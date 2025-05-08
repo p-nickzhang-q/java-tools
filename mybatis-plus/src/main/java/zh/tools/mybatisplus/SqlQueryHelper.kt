@@ -27,7 +27,11 @@ class SqlQueryHelper(
     fun <M : BaseMapper<T>, T>
             ServiceImpl<M, T>.listBySql(json: Map<String, Any>): List<T> {
         val sql = jsonToSqlConverter.convertToWhereClause(className, json)
-        return query().apply(sql).list().toList()
+        var query = query()
+        if (sql.isNotEmpty()) {
+            query = query.apply(sql)
+        }
+        return query.list().toList()
     }
 
     fun <M : BaseMapper<T>, T>
