@@ -2,3 +2,4 @@
 target/
 *.iml
 /sqlite
+diff_output.txt
