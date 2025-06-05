@@ -177,21 +177,27 @@ object OkHttpExecutor {
     }
 
     private fun Response.toOkHttpResponse(): OkHttpResponse {
-        val bodyString = this.body?.string() // 先读取原始字符串
-        val bodyJson = if (bodyString != null) {
-            try {
+        val bodyString = this.body?.string()
+        val parsedBody = when {
+            bodyString == null -> null
+            bodyString.startsWith('[') -> try {
+                // 尝试解析为 List
+                jacksonObjectMapper().readValue<List<JSONObject>>(bodyString)
+            } catch (e: Exception) {
+                bodyString // 解析失败返回原始字符串
+            }
+            bodyString.startsWith('{') -> try {
+                // 尝试解析为 JSON 对象
                 jacksonObjectMapper().readValue<JSONObject>(bodyString)
             } catch (e: Exception) {
-                // 如果解析失败，返回原始字符串（兼容非 JSON 响应）
                 bodyString
             }
-        } else {
-            null
+            else -> bodyString // 纯文本响应
         }
 
         return OkHttpResponse(
             statusCode = this.code,
-            body = bodyJson, // 返回 JSON 对象或原始字符串
+            body = parsedBody,
             headers = this.headers.toMap()
         )
     }
