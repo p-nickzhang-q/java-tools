@@ -10,7 +10,7 @@ import zh.tools.maptosql.json
 
 class SqlQueryHelper(
     private val jsonToSqlConverter: JsonToSqlConverter,
-    private val className: String
+    private val className: String,
 ) {
     fun <M : BaseMapper<T>, T>
             ServiceImpl<M, T>.listBySql(block: QueryBuilder.() -> Unit): List<T> {
@@ -25,17 +25,23 @@ class SqlQueryHelper(
     }
 
     fun <M : BaseMapper<T>, T>
-            ServiceImpl<M, T>.listBySql(json: Map<String, Any>): List<T> {
+            ServiceImpl<M, T>.listBySql(json: Map<String, Any>, callBack: (QueryWrapper<T>) -> Unit = {}): List<T> {
         val sql = jsonToSqlConverter.convertToWhereClause(className, json)
-        var query = query()
+        var query = QueryWrapper<T>()
         if (sql.isNotEmpty()) {
             query = query.apply(sql)
         }
-        return query.list().toList()
+        callBack(query)
+        return list(query)
     }
 
     fun <M : BaseMapper<T>, T>
-            ServiceImpl<M, T>.pageBySql(json: Map<String, Any>, page: Long, pageSize: Long): Page<T> {
+            ServiceImpl<M, T>.pageBySql(
+        json: Map<String, Any>,
+        page: Long,
+        pageSize: Long,
+        callBack: (QueryWrapper<T>) -> Unit = {},
+    ): Page<T> {
         val sql = jsonToSqlConverter.convertToWhereClause(className, json)
         val pageObj = Page<T>(page, pageSize)
         val queryWrapper = if (sql.isNotEmpty()) {
@@ -43,6 +49,7 @@ class SqlQueryHelper(
         } else {
             QueryWrapper()
         }
+        callBack(queryWrapper)
         return page(pageObj, queryWrapper)
     }
 }
