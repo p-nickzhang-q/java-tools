@@ -82,6 +82,7 @@ fun main() {
     println("Generated SQL1: $sql")
     println("Generated SQL2: $sql2")
     println("Generated SQL3: $sql3")
+    println("Generated SQL4: ${converter.convertToWhereClause("User", query4)}")
 
 //    // 4. 使用PostgreSQL方言
 //    val pgConverter = JsonToSqlConverter(PostgreSqlDialect(), entityMappings)

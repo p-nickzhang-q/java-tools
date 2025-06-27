@@ -19,7 +19,7 @@ open class JsonToSqlConverter(
         offset: Int? = null,
         limit: Int? = null
     ): String {
-        val mapping = entityMappings[entityName] ?: throw IllegalArgumentException("Unknown entity: $entityName")
+        val mapping = entityMapping(entityName)
 
         val tableName = dialect.quoteIdentifier(mapping.tableName)
         val fields = selectFields ?: mapping.defaultSelectFields
@@ -35,6 +35,10 @@ open class JsonToSqlConverter(
 
         return sql
     }
+
+    fun entityMapping(entityName: String) =
+        entityMappings[entityName] ?: throw IllegalArgumentException("Unknown entity: $entityName")
+
 
     fun convertToWhereClause(
         entityName: String,

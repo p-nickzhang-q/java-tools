@@ -1,5 +1,7 @@
 package zh.tools.maptosql
 
+import java.lang.reflect.Field
+
 // 3. 定义实体映射配置
 data class EntityMapping(
     val tableName: String,
@@ -24,7 +26,7 @@ object AnnotationParser {
         val tableName = clazz.getAnnotation(Table::class.java)?.name
             ?: clazz.simpleName.camelToSnakeCase()
 
-        val fieldMappings = clazz.declaredFields
+        val fieldMappings = getAllFields(clazz)
             .associate { field ->
                 // 获取列名：优先使用@Column注解，没有则使用字段名驼峰转蛇形
                 val columnName = field.getAnnotation(Column::class.java)?.name?.takeIf { it.isNotEmpty() }
@@ -37,6 +39,18 @@ object AnnotationParser {
             tableName = tableName,
             fieldMappings = fieldMappings
         )
+    }
+
+    private fun getAllFields(clazz: Class<*>): List<Field> {
+        val fields = mutableListOf<Field>()
+        var currentClass: Class<*>? = clazz
+
+        while (currentClass != null && currentClass != Any::class.java) {
+            fields.addAll(currentClass.declaredFields)
+            currentClass = currentClass.superclass
+        }
+
+        return fields
     }
 
     // 批量解析多个类（保持不变）

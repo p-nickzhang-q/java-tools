@@ -25,14 +25,33 @@ class SqlQueryHelper(
     }
 
     fun <M : BaseMapper<T>, T>
-            ServiceImpl<M, T>.listBySql(json: Map<String, Any>, callBack: (QueryWrapper<T>) -> Unit = {}): List<T> {
+            ServiceImpl<M, T>.listBySql(
+        json: Map<String, Any>,
+        orders: List<Pair<String, OrderType>> = emptyList(),
+        callBack: (QueryWrapper<T>) -> Unit = {},
+    ): List<T> {
         val sql = jsonToSqlConverter.convertToWhereClause(className, json)
         var query = QueryWrapper<T>()
         if (sql.isNotEmpty()) {
             query = query.apply(sql)
         }
+        if (orders.isNotEmpty()) {
+            query.addOrders(orders)
+        }
         callBack(query)
         return list(query)
+    }
+
+    private fun QueryWrapper<*>.addOrders(
+        orders: List<Pair<String, OrderType>>,
+    ) {
+        for (order in orders) {
+            val columnName = jsonToSqlConverter.entityMapping(className).fieldMappings[order.first] ?: order.first
+            when (order.second) {
+                OrderType.ASC -> orderByAsc(columnName)
+                OrderType.DESC -> orderByDesc(columnName)
+            }
+        }
     }
 
     fun <M : BaseMapper<T>, T>
@@ -40,6 +59,7 @@ class SqlQueryHelper(
         json: Map<String, Any>,
         page: Long,
         pageSize: Long,
+        orders: List<Pair<String, OrderType>> = emptyList(),
         callBack: (QueryWrapper<T>) -> Unit = {},
     ): Page<T> {
         val sql = jsonToSqlConverter.convertToWhereClause(className, json)
@@ -49,7 +69,16 @@ class SqlQueryHelper(
         } else {
             QueryWrapper()
         }
+        if (orders.isNotEmpty()) {
+            queryWrapper.addOrders(orders)
+        }
         callBack(queryWrapper)
         return page(pageObj, queryWrapper)
     }
+}
+
+// enum order type
+enum class OrderType {
+    ASC,
+    DESC
 }
