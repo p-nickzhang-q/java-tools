@@ -9,7 +9,7 @@ import zh.tools.maptosql.QueryBuilder
 import zh.tools.maptosql.json
 
 class SqlQueryHelper(
-    private val jsonToSqlConverter: JsonToSqlConverter,
+    val jsonToSqlConverter: JsonToSqlConverter,
     private val className: String,
 ) {
     fun <M : BaseMapper<T>, T>
@@ -42,9 +42,9 @@ class SqlQueryHelper(
         return list(query)
     }
 
-    private fun QueryWrapper<*>.addOrders(
+    fun <T> QueryWrapper<T>.addOrders(
         orders: List<Pair<String, OrderType>>,
-    ) {
+    ): QueryWrapper<T> {
         for (order in orders) {
             val columnName = jsonToSqlConverter.entityMapping(className).fieldMappings[order.first] ?: order.first
             when (order.second) {
@@ -52,6 +52,13 @@ class SqlQueryHelper(
                 OrderType.DESC -> orderByDesc(columnName)
             }
         }
+        return this
+    }
+
+    inline fun <reified T> QueryWrapper<T>.applyWhere(noinline block: QueryBuilder.() -> Unit): QueryWrapper<T> {
+        val simpleName = T::class.java.simpleName
+        this.apply(jsonToSqlConverter.convertToWhereClause(simpleName, json(block)))
+        return this
     }
 
     fun <M : BaseMapper<T>, T>
