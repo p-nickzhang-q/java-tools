@@ -14,6 +14,7 @@
         <module>jpa-test</module>
         <module>mybatis-plus-test</module>
         <module>map-to-sql</module>
+        <module>services</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
