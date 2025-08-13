@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+zh.tools.services.scheduledtask.TaskSchedulerAutoConfiguration
