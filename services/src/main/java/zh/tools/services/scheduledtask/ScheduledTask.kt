@@ -26,8 +26,8 @@ interface ScheduledTask {
 object TaskModule : SimpleModule() {
     private val subtypes = mutableMapOf<String, Class<out ScheduledTask>>()
 
-    fun registerSubtype(typeName: String, taskClass: Class<out ScheduledTask>) {
-        subtypes[typeName] = taskClass
+    fun registerSubtype(taskClass: Class<out ScheduledTask>) {
+        subtypes[taskClass.simpleName] = taskClass
     }
 
     override fun setupModule(context: SetupContext) {
