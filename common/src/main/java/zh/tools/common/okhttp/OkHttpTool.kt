@@ -15,7 +15,6 @@ enum class HttpMethod {
     GET, POST, PUT, DELETE
 }
 
-
 data class OkHttpRequest(
     val httpMethod: HttpMethod,
     val url: String,
@@ -96,13 +95,17 @@ private fun String.toContentType(): String = when (lowercase()) {
 
 data class OkHttpResponse(
     val statusCode: Int,
-    val body: Any?, // 可以是 Map<String, Any>（JSON）或 String（非 JSON）
+    val body: Any?, // 可以是 Map<String, Any>（JSON）或 String（非 JSON）或 ByteArray（文件）
     val headers: Map<String, String>,
+    val isFile: Boolean = false,
+    val fileName: String? = null,
+    val contentType: String? = null
 )
 
 object OkHttpExecutor {
     private val mapper = jacksonObjectMapper()
     private val client: OkHttpClient = OkHttpClient()
+
     fun execute(request: OkHttpRequest, baseUrl: String): OkHttpResponse {
         val urlBuilder = "$baseUrl${request.url}".toHttpUrlOrNull()?.newBuilder()
             ?: throw IllegalArgumentException("Invalid URL")
@@ -177,28 +180,69 @@ object OkHttpExecutor {
     }
 
     private fun Response.toOkHttpResponse(): OkHttpResponse {
-        val bodyString = this.body?.string()
-        val parsedBody = when {
-            bodyString == null -> null
-            bodyString.startsWith('[') -> try {
-                // 尝试解析为 List
-                jacksonObjectMapper().readValue<List<JSONObject>>(bodyString)
-            } catch (e: Exception) {
-                bodyString // 解析失败返回原始字符串
-            }
-            bodyString.startsWith('{') -> try {
-                // 尝试解析为 JSON 对象
-                jacksonObjectMapper().readValue<JSONObject>(bodyString)
-            } catch (e: Exception) {
-                bodyString
-            }
-            else -> bodyString // 纯文本响应
-        }
+        val contentType = this.header("Content-Type") ?: ""
+        val contentDisposition = this.header("Content-Disposition") ?: ""
 
-        return OkHttpResponse(
-            statusCode = this.code,
-            body = parsedBody,
-            headers = this.headers.toMap()
-        )
+        // 判断是否为文件响应
+        val isFileResponse = contentType.startsWith("application/octet-stream") ||
+                contentType.startsWith("image/") ||
+                contentType.startsWith("application/pdf") ||
+                contentDisposition.contains("attachment")
+
+        return if (isFileResponse) {
+            // 处理文件响应
+            val bodyBytes = this.body?.bytes()
+            val fileName = extractFileName(contentDisposition)
+
+            OkHttpResponse(
+                statusCode = this.code,
+                body = bodyBytes,
+                headers = this.headers.toMap(),
+                isFile = true,
+                fileName = fileName,
+                contentType = contentType
+            )
+        } else {
+            // 处理普通响应
+            val bodyString = this.body?.string()
+            val parsedBody = when {
+                bodyString == null -> null
+                bodyString.startsWith('[') -> try {
+                    // 尝试解析为 List
+                    jacksonObjectMapper().readValue<List<JSONObject>>(bodyString)
+                } catch (e: Exception) {
+                    bodyString // 解析失败返回原始字符串
+                }
+                bodyString.startsWith('{') -> try {
+                    // 尝试解析为 JSON 对象
+                    jacksonObjectMapper().readValue<JSONObject>(bodyString)
+                } catch (e: Exception) {
+                    bodyString
+                }
+                else -> bodyString // 纯文本响应
+            }
+
+            OkHttpResponse(
+                statusCode = this.code,
+                body = parsedBody,
+                headers = this.headers.toMap(),
+                isFile = false
+            )
+        }
+    }
+
+    // 从Content-Disposition头中提取文件名
+    private fun extractFileName(contentDisposition: String): String? {
+        return try {
+            val parts = contentDisposition.split(";")
+            for (part in parts) {
+                if (part.trim().startsWith("filename=")) {
+                    return part.trim().substring("filename=".length).trim('"')
+                }
+            }
+            null
+        } catch (e: Exception) {
+            null
+        }
     }
 }
