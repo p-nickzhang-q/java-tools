@@ -9,10 +9,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 // 配套的请求方法枚举
 enum class HttpMethod {
-    GET, POST, PUT, DELETE
+    GET, POST, PUT, DELETE, PATCH
 }
 
 data class OkHttpRequest(
@@ -21,10 +23,11 @@ data class OkHttpRequest(
     var body: Any? = null,
     var params: MutableMap<String, Any> = mutableMapOf(),
     var headers: MutableMap<String, String> = mutableMapOf(),
-    // 修改为普通Map，避免数据类冲突
     var files: Map<String, FilePart> = emptyMap(),
+    var timeout: Long = 30, // 默认超时时间30秒
+    var followRedirects: Boolean = true // 默认跟随重定向
 ) {
-    // 将密封类改为普通类层次结构
+    // 文件部分的密封类
     sealed class FilePart {
         abstract val partName: String
         abstract val fileName: String?
@@ -90,6 +93,12 @@ private fun String.toContentType(): String = when (lowercase()) {
     "jpg", "jpeg" -> "image/jpeg"
     "png" -> "image/png"
     "pdf" -> "application/pdf"
+    "doc", "docx" -> "application/msword"
+    "xls", "xlsx" -> "application/vnd.ms-excel"
+    "txt" -> "text/plain"
+    "json" -> "application/json"
+    "xml" -> "application/xml"
+    "zip" -> "application/zip"
     else -> "application/octet-stream"
 }
 
@@ -99,16 +108,32 @@ data class OkHttpResponse(
     val headers: Map<String, String>,
     val isFile: Boolean = false,
     val fileName: String? = null,
-    val contentType: String? = null
+    val contentType: String? = null,
+    val contentLength: Long? = null
 )
 
 object OkHttpExecutor {
     private val mapper = jacksonObjectMapper()
-    private val client: OkHttpClient = OkHttpClient()
+    private val defaultClient: OkHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .followRedirects(true)
+        .followSslRedirects(true)
+        .build()
 
     fun execute(request: OkHttpRequest, baseUrl: String): OkHttpResponse {
+        // 创建自定义客户端
+        val client = defaultClient.newBuilder()
+            .connectTimeout(request.timeout, TimeUnit.SECONDS)
+            .readTimeout(request.timeout, TimeUnit.SECONDS)
+            .writeTimeout(request.timeout, TimeUnit.SECONDS)
+            .followRedirects(request.followRedirects)
+            .followSslRedirects(request.followRedirects)
+            .build()
+
         val urlBuilder = "$baseUrl${request.url}".toHttpUrlOrNull()?.newBuilder()
-            ?: throw IllegalArgumentException("Invalid URL")
+            ?: throw IllegalArgumentException("Invalid URL: $baseUrl${request.url}")
 
         // 处理查询参数
         request.params.forEach { (key, value) ->
@@ -122,7 +147,13 @@ object OkHttpExecutor {
             buildMultipartRequest(request, urlBuilder.build())
         }
 
-        return client.newCall(okRequest).execute().toOkHttpResponse()
+        return try {
+            client.newCall(okRequest).execute().use { response ->
+                response.toOkHttpResponse()
+            }
+        } catch (e: IOException) {
+            throw OkHttpException("Request failed: ${e.message}", e)
+        }
     }
 
     private fun buildMultipartRequest(request: OkHttpRequest, url: HttpUrl): Request {
@@ -131,11 +162,8 @@ object OkHttpExecutor {
 
         // 添加文件部分
         request.files.forEach { (_, part) ->
-            multipartBuilder.addFormDataPart(
-                part.partName,
-                part.fileName,
-                part.content.toRequestBody(part.contentType.toMediaType())
-            )
+            val requestBody = part.content.toRequestBody(part.contentType.toMediaType())
+            multipartBuilder.addFormDataPart(part.partName, part.fileName, requestBody)
         }
 
         // 添加普通参数
@@ -152,8 +180,11 @@ object OkHttpExecutor {
 
     private fun buildNormalRequest(request: OkHttpRequest, url: HttpUrl): Request {
         val requestBody = request.body?.let {
-            mapper.writeValueAsString(it)
-                .toRequestBody("application/json".toMediaType())
+            when (it) {
+                is String -> it.toRequestBody("text/plain".toMediaType())
+                is ByteArray -> it.toRequestBody("application/octet-stream".toMediaType())
+                else -> mapper.writeValueAsString(it).toRequestBody("application/json".toMediaType())
+            }
         }
 
         return Request.Builder()
@@ -173,20 +204,23 @@ object OkHttpExecutor {
     private fun Request.Builder.applyMethod(method: HttpMethod, body: RequestBody?): Request.Builder {
         return when (method) {
             HttpMethod.GET -> get()
-            HttpMethod.POST -> post(body!!)
-            HttpMethod.PUT -> put(body!!)
-            HttpMethod.DELETE -> delete(body)
+            HttpMethod.POST -> post(body ?: EMPTY_REQUEST)
+            HttpMethod.PUT -> put(body ?: EMPTY_REQUEST)
+            HttpMethod.DELETE -> delete(body ?: EMPTY_REQUEST)
+            HttpMethod.PATCH -> patch(body ?: EMPTY_REQUEST)
         }
     }
 
     private fun Response.toOkHttpResponse(): OkHttpResponse {
         val contentType = this.header("Content-Type") ?: ""
         val contentDisposition = this.header("Content-Disposition") ?: ""
+        val contentLength = this.header("Content-Length")?.toLongOrNull()
 
         // 判断是否为文件响应
         val isFileResponse = contentType.startsWith("application/octet-stream") ||
                 contentType.startsWith("image/") ||
                 contentType.startsWith("application/pdf") ||
+                contentType.startsWith("application/vnd.ms-") ||
                 contentDisposition.contains("attachment")
 
         return if (isFileResponse) {
@@ -200,34 +234,43 @@ object OkHttpExecutor {
                 headers = this.headers.toMap(),
                 isFile = true,
                 fileName = fileName,
-                contentType = contentType
+                contentType = contentType,
+                contentLength = contentLength
             )
         } else {
             // 处理普通响应
             val bodyString = this.body?.string()
-            val parsedBody = when {
-                bodyString == null -> null
-                bodyString.startsWith('[') -> try {
-                    // 尝试解析为 List
-                    jacksonObjectMapper().readValue<List<JSONObject>>(bodyString)
-                } catch (e: Exception) {
-                    bodyString // 解析失败返回原始字符串
-                }
-                bodyString.startsWith('{') -> try {
-                    // 尝试解析为 JSON 对象
-                    jacksonObjectMapper().readValue<JSONObject>(bodyString)
-                } catch (e: Exception) {
-                    bodyString
-                }
-                else -> bodyString // 纯文本响应
-            }
+            val parsedBody = parseResponseBody(bodyString, contentType)
 
             OkHttpResponse(
                 statusCode = this.code,
                 body = parsedBody,
                 headers = this.headers.toMap(),
-                isFile = false
+                isFile = false,
+                contentType = contentType,
+                contentLength = contentLength
             )
+        }
+    }
+
+    // 解析响应体
+    private fun parseResponseBody(bodyString: String?, contentType: String): Any? {
+        if (bodyString == null) return null
+
+        return try {
+            when {
+                contentType.startsWith("application/json") -> {
+                    when {
+                        bodyString.startsWith('[') -> mapper.readValue<List<Any>>(bodyString)
+                        bodyString.startsWith('{') -> mapper.readValue<JSONObject>(bodyString)
+                        else -> bodyString
+                    }
+                }
+                contentType.startsWith("text/") -> bodyString
+                else -> bodyString // 其他类型作为字符串处理
+            }
+        } catch (e: Exception) {
+            bodyString // 解析失败返回原始字符串
         }
     }
 
@@ -239,10 +282,21 @@ object OkHttpExecutor {
                 if (part.trim().startsWith("filename=")) {
                     return part.trim().substring("filename=".length).trim('"')
                 }
+                // 处理 filename*=UTF-8''encodedfilename 格式
+                if (part.trim().startsWith("filename*=UTF-8''")) {
+                    val encoded = part.trim().substring("filename*=UTF-8''".length)
+                    return java.net.URLDecoder.decode(encoded, "UTF-8")
+                }
             }
             null
         } catch (e: Exception) {
             null
         }
     }
+
+    // 空请求体
+    private val EMPTY_REQUEST = "".toRequestBody("application/json".toMediaType())
 }
+
+// 自定义异常类
+class OkHttpException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
