@@ -124,6 +124,8 @@ object OkHttpExecutor {
 
     fun execute(request: OkHttpRequest, baseUrl: String): OkHttpResponse {
         // 创建自定义客户端
+        // 基于 defaultClient 创建新客户端。
+        // 注意：newBuilder() 会自动复用 defaultClient 的连接池和线程池，因此不会有性能损耗。
         val client = defaultClient.newBuilder()
             .connectTimeout(request.timeout, TimeUnit.SECONDS)
             .readTimeout(request.timeout, TimeUnit.SECONDS)
@@ -266,6 +268,7 @@ object OkHttpExecutor {
                         else -> bodyString
                     }
                 }
+
                 contentType.startsWith("text/") -> bodyString
                 else -> bodyString // 其他类型作为字符串处理
             }
