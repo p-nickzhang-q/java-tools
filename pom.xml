@@ -84,6 +84,55 @@
         </dependency>
     </dependencies>
 
+    <!--
+        各子模块版本统一登记处：子模块间相互引用时省略 <version>，自动从这里取值。
+        升级某模块版本后，只需更新这里对应的版本号。
+    -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-common</artifactId>
+                <version>0.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-jpa</artifactId>
+                <version>0.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-excel</artifactId>
+                <version>0.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-word</artifactId>
+                <version>0.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-pdf</artifactId>
+                <version>0.0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-mybatisplus</artifactId>
+                <version>0.1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>map-to-sql</artifactId>
+                <version>0.0.8</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.p-nickzhang-q</groupId>
+                <artifactId>zh-tools-services</artifactId>
+                <version>1.0.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
